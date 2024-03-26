@@ -4,7 +4,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp1206.scene.MenuScene;
 
 import java.io.File;
 
@@ -13,6 +12,7 @@ public class Multimedia {
     private static MediaPlayer audioPlayer;
     private static final Logger logger = LogManager.getLogger(Multimedia.class);
 
+    //enums help with magic boxing this class (making it so no other class needs to know how it works)
     public static enum SOUND{CLEAR, EXPLODE, FAIL, INTRO, LEVEL, LIFEGAIN, LIFELOSE, PLACE, PLING, ROTATE, TRANSITION}
     public static enum MUSIC{END, GAME, GAME_START, MENU}
 
@@ -70,6 +70,11 @@ public class Multimedia {
 
         //Media only accepts uri strings. This converts our path to a uri string.
        playBackgroundMusic(relativePath);
+        logger.info("Played : " + music);
+    }
+
+    public static void stopCurrentBackgroundMusic(){
+        backgroundMusicPlayer.stop();
     }
 
 

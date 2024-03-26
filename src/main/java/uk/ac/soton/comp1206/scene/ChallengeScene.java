@@ -8,13 +8,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.media.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -64,8 +67,8 @@ public class ChallengeScene extends BaseScene {
         //lables for score, multiplier and lives
         HBox hBox = new HBox();
         Label scoreText = generateUIText("SCORE:");
-        Label multiplierText = generateUIText("  MULTIPLIER:");
-        Label livesText = generateUIText("  LIVES:");
+        Label multiplierText = generateUIText("    MULTIPLIER:");
+        Label livesText = generateUIText("     LIVES:");
 
         //labels for the number of score, lives and multiplier
         Label scoreNum = generateUINumber(game.getScore());
@@ -77,6 +80,9 @@ public class ChallengeScene extends BaseScene {
         hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum ,livesText, livesNum);
         mainPane.setTop(hBox);
 
+        //play game music
+        Multimedia.stopCurrentBackgroundMusic();
+        Multimedia.playBackgroundMusic(Multimedia.MUSIC.GAME);
 
     }
 
@@ -84,8 +90,8 @@ public class ChallengeScene extends BaseScene {
         Label label = new Label(s);
         label.setTextFill(Color.YELLOW);
 
-        //css commands to set font style and font size
-        label.setStyle("-fx-font-style: Orbitron-Bold; -fx-font-size: 40px;");
+        //set font style
+        label.setFont(new Font("Impact", 40));
 
         DropShadow shadow = new DropShadow(); //displays a shadow behind the text. Looks better.
 

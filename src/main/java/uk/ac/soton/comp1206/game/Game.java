@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
+import uk.ac.soton.comp1206.media.Multimedia;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -84,6 +85,7 @@ public class Game {
 
         //attempt to play the piece
         if(grid.playPiece(currentPiece, x, y)){
+            Multimedia.playAudioFile(Multimedia.SOUND.PLACE);
             nextPiece();
             afterPiece();
         }
@@ -202,8 +204,10 @@ public class Game {
 
         //set multiplier
         //if a line has been cleared add 1 to the multiplier. If not, set the multiplier back to one.
+        //checks if a line has been cleared so can also add the sound here
         if(noLines != 0){
             multiplier.set(multiplier.get() + 1);
+            Multimedia.playAudioFile(Multimedia.SOUND.CLEAR);
         }
         else{
             multiplier.set(1);
