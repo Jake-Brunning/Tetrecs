@@ -199,6 +199,15 @@ public class Game {
         //update the level
         //increases level by one for every 1000 score.
         level.set(Math.floorDiv(score.get(), 1000));
+
+        //set multiplier
+        //if a line has been cleared add 1 to the multiplier. If not, set the multiplier back to one.
+        if(noLines != 0){
+            multiplier.set(multiplier.get() + 1);
+        }
+        else{
+            multiplier.set(1);
+        }
     }
 
     //gets for score, lives, level and multiplier
