@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -65,7 +66,8 @@ public class Game {
      * @param gameBlock the block that was clicked
      */
     public void blockClicked(GameBlock gameBlock) {
-        logger.info("Detected block click");
+        //called when a block is clicked (logger already logs a block has been clicked hence the no logger statement)
+
         //Get the position of this block
         int x = gameBlock.getX();
         int y = gameBlock.getY();
@@ -74,6 +76,7 @@ public class Game {
         //attempt to play the piece
         if(grid.playPiece(currentPiece, x, y)){
             nextPiece();
+            afterPiece();
         }
     }
 
@@ -102,9 +105,10 @@ public class Game {
     }
 
     private GamePiece spawnPiece(){
-        logger.info("Spawning piece");
         Random rng = new Random();
-        return GamePiece.createPiece(rng.nextInt(0, GamePiece.PIECES));
+        GamePiece newPiece = GamePiece.createPiece(rng.nextInt(0, GamePiece.PIECES));
+        logger.info("Spawned piece : " + newPiece);
+        return newPiece;
     }
 
     private void nextPiece(){
@@ -112,8 +116,59 @@ public class Game {
         currentPiece = spawnPiece();
     }
 
-    private void afterPiece(){
-        //clear lines
+    private void afterPiece(){//check if any horizontal / vertical lines have been cleared
+
+        //(this function can be improved in terms of time but its more readable this way)
+
+
+        Boolean isHorizontalFull = true; //true if a whole horizontal is full
+        Boolean isVerticalFull = true; //true if a whole vertical is full
+        ArrayList<Integer> horizontalsToClear = new ArrayList<Integer>(); //the horizontal lines to clear
+        ArrayList<Integer> verticalsToClear = new ArrayList<Integer>(); //the vertical lines to clear
+
+        for(int j = 0; j < grid.getRows(); j++){ //go through the cols (iterates downwards)
+            for(int i = 0; i < grid.getCols(); i++){ //go through the rows (iterates right)
+
+                //i j get swapped in vertical check. Means for loop will iterate downwards for vertical
+                //and to the right for horizontal.
+
+                if(grid.get(i, j) == 0){ //if space is empty on the horizontal
+                    isHorizontalFull = false;
+                }
+
+                if(grid.get(j, i) == 0){ //if space is empty on the vertical
+                    isVerticalFull = false;
+                }
+            }
+            if(isHorizontalFull){ //if the line is full mark it for clearing
+                horizontalsToClear.add(j);
+                logger.info("Detected horizontal : " + j + " should be cleared");
+            }
+            if(isVerticalFull){
+                verticalsToClear.add(j);
+                logger.info("Detected vertical : " + j + " should be cleared");
+            }
+            //reset vertical and horizontal
+            isHorizontalFull = true;
+            isVerticalFull = true;
+        }
+
+        //clear the lines
+        //TODO: add a score?
+
+        //clear horizontals
+        for (Integer row : horizontalsToClear) {
+            for(int i = 0 ; i < grid.getCols(); i++){ //i goes right
+                grid.set(i, row, 0);
+            }
+        }
+
+        //clear verticals
+        for(Integer col : verticalsToClear){
+            for(int j = 0; j < grid.getRows(); j++){ //j goes downwards
+                grid.set(col, j, 0);
+            }
+        }
     }
 
 }
