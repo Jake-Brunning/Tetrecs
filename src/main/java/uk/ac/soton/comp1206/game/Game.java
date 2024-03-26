@@ -1,5 +1,8 @@
 package uk.ac.soton.comp1206.game;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -31,6 +34,12 @@ public class Game {
     protected final Grid grid;
 
     private GamePiece currentPiece;
+
+
+    private SimpleIntegerProperty score = new SimpleIntegerProperty(0);
+    private SimpleIntegerProperty level = new SimpleIntegerProperty(0);
+    private SimpleIntegerProperty lives = new SimpleIntegerProperty(3);
+    private SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
 
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
@@ -153,9 +162,20 @@ public class Game {
             isVerticalFull = true;
         }
 
-        //clear the lines
-        //TODO: add a score?
+        //calculate score
+        int amountOfBlocksCleared = 5 * (verticalsToClear.size() + horizontalsToClear.size());
 
+        //adjust for overlapping lines
+        //if a number is in both verticalToClear and horizontalToClear then they overlap.
+        for (int x: horizontalsToClear) {
+            if(verticalsToClear.contains(x)){
+                amountOfBlocksCleared = amountOfBlocksCleared - 1; //overlap, so one less block is cleared than whats expected
+            }
+        }
+
+        calculateAndUpdateScore(verticalsToClear.size() + horizontalsToClear.size(), amountOfBlocksCleared);
+
+        //clear the lines
         //clear horizontals
         for (Integer row : horizontalsToClear) {
             for(int i = 0 ; i < grid.getCols(); i++){ //i goes right
@@ -171,4 +191,30 @@ public class Game {
         }
     }
 
+    private void calculateAndUpdateScore(int noLines, int noBlocks){ //calculates the new score and sets it to score
+        //formula:
+        //score = score + (numberOfLinesCleared * numberOfBlocksCleared * 10 * currentMultiplier)
+        score.set(score.get() + (noLines * noBlocks * 10 * multiplier.get()));
+
+        //update the level
+        //increases level by one for every 1000 score.
+        level.set(Math.floorDiv(score.get(), 1000));
+    }
+
+    //gets for score, lives, level and multiplier
+    public SimpleIntegerProperty getScore(){
+        return score;
+    }
+
+    public SimpleIntegerProperty getLives(){
+        return lives;
+    }
+
+    public SimpleIntegerProperty getLevel(){
+        return level;
+    }
+
+    public SimpleIntegerProperty getMultiplier(){
+        return multiplier;
+    }
 }

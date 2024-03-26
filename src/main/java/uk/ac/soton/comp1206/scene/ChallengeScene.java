@@ -1,6 +1,15 @@
 package uk.ac.soton.comp1206.scene;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.css.Style;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -51,6 +60,53 @@ public class ChallengeScene extends BaseScene {
 
         //Handle block on gameboard grid being clicked
         board.setOnBlockClick(this::blockClicked);
+
+        //lables for score, multiplier and lives
+        HBox hBox = new HBox();
+        Label scoreText = generateUIText("SCORE:");
+        Label multiplierText = generateUIText("  MULTIPLIER:");
+        Label livesText = generateUIText("  LIVES:");
+
+        //labels for the number of score, lives and multiplier
+        Label scoreNum = generateUINumber(game.getScore());
+        Label multiplierNum = generateUINumber(game.getMultiplier());
+        Label livesNum = generateUINumber(game.getLives());
+
+        //set spacing and add to the top of the display
+        hBox.setSpacing(5);
+        hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum ,livesText, livesNum);
+        mainPane.setTop(hBox);
+
+
+    }
+
+    private Label generateUIText(String s){ //returns a label with the specified string in a cool font
+        Label label = new Label(s);
+        label.setTextFill(Color.YELLOW);
+
+        //css commands to set font style and font size
+        label.setStyle("-fx-font-style: Orbitron-Bold; -fx-font-size: 40px;");
+
+        DropShadow shadow = new DropShadow(); //displays a shadow behind the text. Looks better.
+
+        //was playing around with the settings and these look nice.
+        shadow.setOffsetX(3);
+        shadow.setOffsetY(3);
+        shadow.setWidth(20);
+        shadow.setHeight(20);
+
+
+        shadow.setColor(Color.BLACK);
+        label.setEffect(shadow);
+
+        return label;
+    }
+
+    private Label generateUINumber(SimpleIntegerProperty toBind){ //returns a label which can be binded to a number to display it
+        Label label = generateUIText("");
+        label.setTextFill(Color.WHITE); //set colour
+        label.textProperty().bind(toBind.asString());
+        return label;
     }
 
     /**
