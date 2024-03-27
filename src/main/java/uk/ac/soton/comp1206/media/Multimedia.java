@@ -17,9 +17,11 @@ public class Multimedia {
     public static enum MUSIC{END, GAME, GAME_START, MENU}
 
 
-
-    //plays a specified audioFile once
-    private static void playAudioFile(String filePath){
+    /**
+     *
+     * @param filePath : the filepath of the sound to play
+     */
+    private static void playAudioFile(String filePath){ //plays a specified audio file once
         //Media only accepts uri strings. This converts our path to a uri string.
         File file = new File(filePath);
         String uriString = file.toURI().toString();
@@ -27,9 +29,13 @@ public class Multimedia {
         audioPlayer.play();
     }
 
-    //plays a specified sound based on sound enum
+    /**
+     *
+     * @param sound : the sound to play as an enum. Its converted to a filepath of that sound
+     */
     public static void playAudioFile(SOUND sound){
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sounds" + File.separator;
+
         switch (sound){
             case CLEAR -> relativePath = relativePath + "clear.wav";
             case FAIL ->  relativePath =relativePath + "fail.wav";
@@ -48,19 +54,28 @@ public class Multimedia {
         logger.info("Played : " + sound);
     }
 
-    //loop a specified audioFile
-    private static void playBackgroundMusic(String filePath){
+    /**
+     *
+     * @param filePath the filepath of the music to play
+     */
+    private static void playBackgroundMusic(String filePath){ //loop a specified audiofile
+
         //Media only accepts uri strings. This converts our path to a uri string.
         File file = new File(filePath);
         String uriString = file.toURI().toString();
+
         backgroundMusicPlayer = new MediaPlayer(new Media(uriString));
         backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE); //make it so the music loops forever
         backgroundMusicPlayer.play();
     }
 
-    //loop a specifed audioFile based on enum
-    public static void playBackgroundMusic(MUSIC music){
+    /**
+     *
+     * @param music the music to play on loop as an enum. its converted to a filepath.
+     */
+    public static void playBackgroundMusic(MUSIC music){//loop a specifed audioFile based on enum
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "music" + File.separator;
+
         switch(music){
             case END -> relativePath = relativePath + "end.wav";
             case GAME -> relativePath = relativePath + "game.wav";
@@ -73,7 +88,8 @@ public class Multimedia {
         logger.info("Played : " + music);
     }
 
-    public static void stopCurrentBackgroundMusic(){
+
+    public static void stopCurrentBackgroundMusic(){ //stops the current music from playing
         backgroundMusicPlayer.stop();
     }
 
