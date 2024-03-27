@@ -1,12 +1,10 @@
 package uk.ac.soton.comp1206.game;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
-import uk.ac.soton.comp1206.media.Multimedia;
+import uk.ac.soton.comp1206.helpers.Multimedia;
 
 import java.util.ArrayList;
 import java.util.Random;

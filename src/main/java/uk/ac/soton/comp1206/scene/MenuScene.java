@@ -4,13 +4,15 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp1206.media.Multimedia;
+import uk.ac.soton.comp1206.helpers.Multimedia;
+import uk.ac.soton.comp1206.helpers.getImage;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -49,11 +51,17 @@ public class MenuScene extends BaseScene {
         var mainPane = new BorderPane();
         menuPane.getChildren().add(mainPane);
 
-        //add title
-        var title = new Text("TetrECS");
-        title.getStyleClass().add("title");
-        mainPane.setTop(title);
-        BorderPane.setAlignment(title, Pos.CENTER); //set it to top middle
+        //display title image
+        ImageView tetrecsTitle = new ImageView(getImage.getImage(getImage.IMAGE.TETRECS));
+        mainPane.setTop(tetrecsTitle);
+
+        //for some reason, the title image is default 4000 pixels wide, so has to be scaled down
+        tetrecsTitle.setFitHeight(450);
+        tetrecsTitle.setFitWidth(600);
+        tetrecsTitle.setPreserveRatio(true);
+
+        BorderPane.setAlignment(tetrecsTitle, Pos.CENTER); //add it to the top center
+
 
         //make vbox to add all the buttons
         VBox vbox = new VBox();
@@ -74,6 +82,7 @@ public class MenuScene extends BaseScene {
                 });
 
 
+        //add buttons to screen
         vbox.getChildren().addAll(playButton, instrButton, exitButton);
         mainPane.setCenter(vbox);
         BorderPane.setAlignment(vbox, Pos.CENTER);

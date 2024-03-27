@@ -1,4 +1,4 @@
-package uk.ac.soton.comp1206.media;
+package uk.ac.soton.comp1206.helpers;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -6,6 +6,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+
+/**
+ * Helper to play audio. Formatted using static enums, so can call any sound with
+ * Multimedia.playAudioFile(<sound type>) etc.
+ */
 
 public class Multimedia {
     private static MediaPlayer backgroundMusicPlayer;
