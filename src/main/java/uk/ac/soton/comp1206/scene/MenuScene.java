@@ -59,7 +59,6 @@ public class MenuScene extends BaseScene {
         tetrecsTitle.setFitHeight(450);
         tetrecsTitle.setFitWidth(600);
         tetrecsTitle.setPreserveRatio(true);
-
         BorderPane.setAlignment(tetrecsTitle, Pos.CENTER); //add it to the top center
 
 
@@ -81,20 +80,33 @@ public class MenuScene extends BaseScene {
             System.exit(0);
                 });
 
+        //add dev logo
+        ImageView ecsGames = new ImageView(getImage.getImage(getImage.IMAGE.ECSGAMES));
+
+        //dev logo is auto too big so scale it down
+        ecsGames.setFitWidth(200);
+        ecsGames.setFitHeight(150);
+        ecsGames.setPreserveRatio(true);
+
+        //add it to the bottom right
+        mainPane.setBottom(ecsGames);
+        BorderPane.setAlignment(ecsGames, Pos.BOTTOM_RIGHT);
 
         //add buttons to screen
         vbox.getChildren().addAll(playButton, instrButton, exitButton);
+        vbox.setAlignment(Pos.CENTER);
         mainPane.setCenter(vbox);
-        BorderPane.setAlignment(vbox, Pos.CENTER);
 
         Multimedia.playBackgroundMusic(Multimedia.MUSIC.MENU);
+
+        logger.info("Added nodes to Main Menu");
 
     }
 
     private Button constructMenuButtons(String s){ //returns a button which can then have an event listener added to it
         Button button = new Button();
         button.setBackground(null); //make the background transparent
-        button.setFont(new Font("Orbitron", 30)); //set font
+        button.setFont(new Font("Orbitron", 40)); //set font
         button.setText(s);
         button.setTextFill(Color.WHITESMOKE); //set colour
 
