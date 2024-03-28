@@ -81,6 +81,11 @@ public class Multimedia {
     public static void playBackgroundMusic(MUSIC music){//loop a specifed audioFile based on enum
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "music" + File.separator;
 
+        //stop the current track from playing if there is one
+        if(backgroundMusicPlayer != null){
+            backgroundMusicPlayer.stop();
+        }
+
         switch(music){
             case END -> relativePath = relativePath + "end.wav";
             case GAME -> relativePath = relativePath + "game.wav";
@@ -92,12 +97,5 @@ public class Multimedia {
        playBackgroundMusic(relativePath);
         logger.info("Played : " + music);
     }
-
-
-    public static void stopCurrentBackgroundMusic(){ //stops the current music from playing
-        backgroundMusicPlayer.stop();
-    }
-
-
 }
 

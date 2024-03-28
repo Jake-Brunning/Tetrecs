@@ -4,6 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.effect.Glow;
 import javafx.scene.paint.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -103,7 +104,6 @@ public class GameBlock extends Canvas {
      * Handle painting of the block canvas
      */
 
-    //TODO: change this to take int to paint a certain colour?
     public void paint() {
         //If the block is empty, paint as empty
         if(value.get() == 0) {
@@ -120,12 +120,22 @@ public class GameBlock extends Canvas {
     private void paintEmpty() {
         var gc = getGraphicsContext2D();
 
+        //TODO: add an effect to unfilled rects to make it look cooler
+
         //Clear
         gc.clearRect(0,0,width,height);
 
         //Fill
-        gc.setFill(Color.WHITE);
-        gc.fillRect(0,0, width, height);
+        gc.setFill(Color.TRANSPARENT);
+        gc.fillRect(0, 0, width, height);
+
+
+        //TODO: fix glow effect. its not cleared when peices are cleared leading to it looking like no pieces have been cleared.
+
+        //glow effect on the rects makes the pieces look shiny
+        Glow glow = new Glow();
+        glow.setLevel(0.6);
+        //gc.setEffect(glow);
 
         //Border
         gc.setStroke(Color.BLACK);

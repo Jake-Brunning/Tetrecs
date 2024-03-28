@@ -1,8 +1,11 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -10,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
+import uk.ac.soton.comp1206.component.PieceBoard;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
@@ -55,6 +59,22 @@ public class ChallengeScene extends BaseScene {
         var board = new GameBoard(game.getGrid(),gameWindow.getWidth()/2,gameWindow.getWidth()/2);
         mainPane.setCenter(board);
 
+        //vbox for piece displays
+        VBox pieceDisplayVBox = new VBox();
+        pieceDisplayVBox.setSpacing(30);
+
+        //add the current piece display to the screen
+        PieceBoard currentPiece = new PieceBoard();
+
+        //add the following piece display to the screen
+        PieceBoard followingPiece = new PieceBoard();
+
+        //TODO: add labels between the pieceboards? (saying if its current or next piece)
+        //add pieceboards to the screen
+        pieceDisplayVBox.getChildren().addAll(currentPiece, followingPiece);
+        mainPane.setRight(pieceDisplayVBox);
+        pieceDisplayVBox.setAlignment(Pos.BOTTOM_RIGHT);
+
         //Handle block on gameboard grid being clicked
         board.setOnBlockClick(this::blockClicked);
 
@@ -75,9 +95,24 @@ public class ChallengeScene extends BaseScene {
         mainPane.setTop(hBox);
 
         //play game music
-        Multimedia.stopCurrentBackgroundMusic();
         Multimedia.playBackgroundMusic(Multimedia.MUSIC.GAME);
 
+    }
+
+    private void intiliseKeyboardInputs(){//intilise the events for the keyboard inputs
+        //TODO: add an event which displays the challenge menu
+        getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
+            //long if statement on handling each key press
+            if(key.getCode() == KeyCode.R){
+                logger.info("R key press detected");
+                game.rotateCurrentPiece();
+            }else if(key.getCode() == KeyCode.ESCAPE){
+                logger.info("Escape key press detected");
+                gameWindow.cleanup();
+                //gameWindow.loadScene(new MenuScene(gameWindow));
+                gameWindow.startMenu();
+            }
+        });
     }
 
     private Label generateUIText(String s){ //returns a label with the specified string in a cool font
@@ -133,6 +168,10 @@ public class ChallengeScene extends BaseScene {
     @Override
     public void initialise() {
         logger.info("Initialising Challenge");
+        //A scene has to be active to add the keyboard event listeners
+        //(So javafx knows what scene to add them to)
+        //so initilse keyboard inputs call has to be here and not build
+        intiliseKeyboardInputs();
         game.start();
     }
 

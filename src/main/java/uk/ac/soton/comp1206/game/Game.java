@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
+import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class Game {
     protected final Grid grid;
 
     private GamePiece currentPiece;
-
+    private GamePiece followingPiece;
 
     private SimpleIntegerProperty score = new SimpleIntegerProperty(0);
     private SimpleIntegerProperty level = new SimpleIntegerProperty(0);
@@ -67,6 +68,7 @@ public class Game {
     public void initialiseGame() {
         logger.info("Initialising game");
         currentPiece = spawnPiece();
+        followingPiece = spawnPiece();
     }
 
     /**
@@ -122,7 +124,8 @@ public class Game {
 
     private void nextPiece(){
         logger.info("Switching to next piece");
-        currentPiece = spawnPiece();
+        currentPiece = followingPiece;
+        followingPiece = spawnPiece();
     }
 
     private void afterPiece(){//check if any horizontal / vertical lines have been cleared
@@ -210,6 +213,10 @@ public class Game {
         else{
             multiplier.set(1);
         }
+    }
+
+    public void rotateCurrentPiece(){
+        currentPiece.rotate();
     }
 
     //gets for score, lives, level and multiplier
