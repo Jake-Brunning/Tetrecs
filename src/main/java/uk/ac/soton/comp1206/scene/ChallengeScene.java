@@ -14,7 +14,9 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
+import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -26,6 +28,7 @@ public class ChallengeScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     protected Game game;
+
 
     /**
      * Create a new Single Player challenge scene
@@ -64,10 +67,10 @@ public class ChallengeScene extends BaseScene {
         pieceDisplayVBox.setSpacing(30);
 
         //add the current piece display to the screen
-        PieceBoard currentPiece = new PieceBoard();
+        PieceBoard currentPiece = new PieceBoard(250, 250);
 
         //add the following piece display to the screen
-        PieceBoard followingPiece = new PieceBoard();
+        PieceBoard followingPiece = new PieceBoard(150, 150);
 
         //TODO: add labels between the pieceboards? (saying if its current or next piece)
         //add pieceboards to the screen
@@ -94,6 +97,8 @@ public class ChallengeScene extends BaseScene {
         hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum ,livesText, livesNum);
         mainPane.setTop(hBox);
 
+
+
         //play game music
         Multimedia.playBackgroundMusic(Multimedia.MUSIC.GAME);
 
@@ -103,10 +108,21 @@ public class ChallengeScene extends BaseScene {
         //TODO: add an event which displays the challenge menu
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             //long if statement on handling each key press
-            if(key.getCode() == KeyCode.R){
-                logger.info("R key press detected");
-                game.rotateCurrentPiece();
-            }else if(key.getCode() == KeyCode.ESCAPE){
+            if(key.getCode() == KeyCode.R || key.getCode() == KeyCode.SPACE){
+                logger.info("R or space press detected");
+                game.swapPieces();
+            }
+            else if(key.getCode() == KeyCode.Q || key.getCode() == KeyCode.Z || key.getCode() == KeyCode.OPEN_BRACKET){
+                //left rotation
+                logger.info("Q or Z or [ press detected");
+                game.rotateCurrentPiece(3);
+            }
+            else if (key.getCode() == KeyCode.E || key.getCode() == KeyCode.C || key.getCode() == KeyCode.CLOSE_BRACKET){
+                //right rotation
+                logger.info("E or C or ] press detected");
+                game.rotateCurrentPiece(1);
+            }
+            else if(key.getCode() == KeyCode.ESCAPE){
                 logger.info("Escape key press detected");
                 gameWindow.cleanup();
                 //gameWindow.loadScene(new MenuScene(gameWindow));

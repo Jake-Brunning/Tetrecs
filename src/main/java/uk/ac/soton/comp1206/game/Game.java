@@ -41,6 +41,9 @@ public class Game {
     private SimpleIntegerProperty lives = new SimpleIntegerProperty(3);
     private SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
 
+    private NextPieceListener nextPieceListener;
+
+
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
      * @param cols number of columns
@@ -126,6 +129,13 @@ public class Game {
         logger.info("Switching to next piece");
         currentPiece = followingPiece;
         followingPiece = spawnPiece();
+    }
+
+    public void swapPieces(){
+        logger.info("Switching pieces");
+        GamePiece temp = currentPiece;
+        currentPiece = followingPiece;
+        followingPiece = temp;
     }
 
     private void afterPiece(){//check if any horizontal / vertical lines have been cleared
@@ -215,8 +225,12 @@ public class Game {
         }
     }
 
-    public void rotateCurrentPiece(){
-        currentPiece.rotate();
+    private void setNextPieceListener(){
+        
+    }
+
+    public void rotateCurrentPiece(int noRotations){
+        currentPiece.rotate(noRotations);
     }
 
     //gets for score, lives, level and multiplier

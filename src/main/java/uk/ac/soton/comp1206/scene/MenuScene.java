@@ -69,7 +69,6 @@ public class MenuScene extends BaseScene {
         tetrecsTitle.setPreserveRatio(true);
         BorderPane.setAlignment(tetrecsTitle, Pos.CENTER); //add it to the top center
 
-
         //make vbox to add all the buttons
         VBox vbox = new VBox();
         vbox.setSpacing(10);

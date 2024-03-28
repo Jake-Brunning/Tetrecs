@@ -1,16 +1,19 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.game.Grid;
 
 /**
  * for displaying a piece which is going to be played
  */
-public class PieceBoard extends GameBoard{
+public class PieceBoard extends GameBoard {
 
-    public PieceBoard(){
+    public PieceBoard(int width, int height){
         //piece board values
-        super(3, 3, 200, 200);
+        super(3, 3, width, height);
     }
 
     public void setPieceToDisplay(GamePiece gamePiece){
