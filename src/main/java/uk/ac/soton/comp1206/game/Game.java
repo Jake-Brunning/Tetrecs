@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.game;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.Event;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -72,6 +73,8 @@ public class Game {
         logger.info("Initialising game");
         currentPiece = spawnPiece();
         followingPiece = spawnPiece();
+        //trigger listener
+        callListener();
     }
 
     /**
@@ -129,6 +132,9 @@ public class Game {
         logger.info("Switching to next piece");
         currentPiece = followingPiece;
         followingPiece = spawnPiece();
+
+        //trigger listener
+        callListener();
     }
 
     public void swapPieces(){
@@ -136,7 +142,16 @@ public class Game {
         GamePiece temp = currentPiece;
         currentPiece = followingPiece;
         followingPiece = temp;
+
+        //trigger listener
+        callListener();
     }
+
+    private void callListener(){
+        //used for updating the piece display in game.
+        nextPieceListener.nextPiece(currentPiece, followingPiece);
+    }
+
 
     private void afterPiece(){//check if any horizontal / vertical lines have been cleared
 
@@ -225,12 +240,13 @@ public class Game {
         }
     }
 
-    private void setNextPieceListener(){
-        
+    public void setNextPieceListener(NextPieceListener nextPieceListener){
+        this.nextPieceListener = nextPieceListener;
     }
 
     public void rotateCurrentPiece(int noRotations){
         currentPiece.rotate(noRotations);
+        callListener();
     }
 
     //gets for score, lives, level and multiplier

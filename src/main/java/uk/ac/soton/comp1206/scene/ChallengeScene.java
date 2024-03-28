@@ -14,9 +14,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
-import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.game.Game;
-import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -67,16 +65,24 @@ public class ChallengeScene extends BaseScene {
         pieceDisplayVBox.setSpacing(30);
 
         //add the current piece display to the screen
-        PieceBoard currentPiece = new PieceBoard(250, 250);
+        PieceBoard displayCurrentPiece = new PieceBoard(250, 250);
 
         //add the following piece display to the screen
-        PieceBoard followingPiece = new PieceBoard(150, 150);
+        PieceBoard displayFollowingPiece = new PieceBoard(150, 150);
+
+        //define what to do when listener is invoked
+        //display the current piece and the following piece in the pieceboards
+        game.setNextPieceListener((currentPiece, followingPiece) -> {
+            displayCurrentPiece.setPieceToDisplay(currentPiece);
+            displayFollowingPiece.setPieceToDisplay(followingPiece);
+        });
 
         //TODO: add labels between the pieceboards? (saying if its current or next piece)
         //add pieceboards to the screen
-        pieceDisplayVBox.getChildren().addAll(currentPiece, followingPiece);
+        pieceDisplayVBox.getChildren().addAll(displayCurrentPiece, displayFollowingPiece);
         mainPane.setRight(pieceDisplayVBox);
         pieceDisplayVBox.setAlignment(Pos.BOTTOM_RIGHT);
+
 
         //Handle block on gameboard grid being clicked
         board.setOnBlockClick(this::blockClicked);
@@ -96,7 +102,6 @@ public class ChallengeScene extends BaseScene {
         hBox.setSpacing(5);
         hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum ,livesText, livesNum);
         mainPane.setTop(hBox);
-
 
 
         //play game music
@@ -190,5 +195,6 @@ public class ChallengeScene extends BaseScene {
         intiliseKeyboardInputs();
         game.start();
     }
+
 
 }

@@ -11,6 +11,7 @@ import uk.ac.soton.comp1206.game.Grid;
  */
 public class PieceBoard extends GameBoard {
 
+    NextPieceListener listener;
     public PieceBoard(int width, int height){
         //piece board values
         super(3, 3, width, height);
