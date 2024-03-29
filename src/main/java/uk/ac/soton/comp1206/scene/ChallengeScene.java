@@ -1,6 +1,12 @@
 package uk.ac.soton.comp1206.scene;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -10,6 +16,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
@@ -29,6 +36,7 @@ public class ChallengeScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     protected Game game;
+    private int noOfFrames = 0; //the number of frames elapsed to play the current piece
 
 
     /**
@@ -89,9 +97,9 @@ public class ChallengeScene extends BaseScene {
             game.rotateCurrentPiece(1);
         });
 
+        //also works on left click (as spec intends)
         displayFollowingPiece.setOnRightClick(()->{
-            //do nothing. This avoids an error because when right clicking following piece
-            //rotate listener is null without this fucnction
+            game.swapPieces();
         });
 
         //TODO: add labels between the pieceboards? (saying if its current or next piece)
@@ -120,14 +128,77 @@ public class ChallengeScene extends BaseScene {
         hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum ,livesText, livesNum);
         mainPane.setTop(hBox);
 
+        //set up timer for animations and etc
+        final int delayBetweenFrames = 10; //the delay between frames in ms
+        Timeline timer = setUpTimer();
+
+        //reset the timer when a piece is played
+        game.setPiecePlacedListener(this::resetTimer);
+
 
         //play game music
         Multimedia.playBackgroundMusic(Multimedia.MUSIC.GAME);
 
+        //start timer
+        timer.setCycleCount(Animation.INDEFINITE); //run the timer indefinetly
+        timer.play();
+
+
+    }
+
+    /**
+     * sets up the timeline to use for the challenge scene. Cannot extend keyframe so needs to be defined here
+     * @return returns the timeline.
+     */
+    private Timeline setUpTimer(){
+        final int delayBetweenFrames = 10;
+
+        return new Timeline(new KeyFrame(Duration.millis(delayBetweenFrames), new EventHandler<ActionEvent>() {
+            private int totalFramesUntilDeath; //the total amount of frames until death occurs
+
+            /**
+             * this function is called every frame
+             * @param actionEvent
+             */
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                //increament number of frames
+                noOfFrames++;
+
+                //check if time has run out to place the current piece
+                //recalculated each frame in case level increases
+                //formula as spec : 12000 - (500 * currentLevel) : min value 2500. Divide by delay between frames to convert to frames
+                int noOfFramesUntilDeath = (12000 - (500 * game.getLevel().get())) / delayBetweenFrames;
+                if(noOfFramesUntilDeath < 250){
+                    noOfFramesUntilDeath = 250;
+                }
+
+                //check if your dead
+                if(noOfFrames == noOfFramesUntilDeath){
+                    logger.info("detected that life should be lost");
+                    //decrease lives by one
+                    game.getLives().set(game.getLives().get() - 1);
+
+                    //change the current piece
+                    game.replaceCurrentPiece();
+
+                    //reset timer
+                    resetTimer();
+
+                    //check if lives is  zero
+                    if(game.getLives().get() == 0){
+                        logger.info("lost");
+                    }
+                }
+            }
+        }));
+    }
+
+    private void resetTimer(){
+        noOfFrames = 0;
     }
 
     private void intiliseKeyboardInputs(){//intilise the events for the keyboard inputs
-        //TODO: add an event which displays the challenge menu
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             //long if statement on handling each key press
             if(key.getCode() == KeyCode.R || key.getCode() == KeyCode.SPACE){

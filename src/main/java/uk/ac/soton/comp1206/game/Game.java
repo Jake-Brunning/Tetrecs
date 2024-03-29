@@ -1,12 +1,11 @@
 package uk.ac.soton.comp1206.game;
 
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.event.Event;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.event.NextPieceListener;
-import uk.ac.soton.comp1206.event.RotateListener;
+import uk.ac.soton.comp1206.event.PiecePlacedListener;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 
 import java.util.ArrayList;
@@ -44,7 +43,8 @@ public class Game {
     private SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
 
     private NextPieceListener nextPieceListener;
-    private RotateListener rotateListener;
+
+    private PiecePlacedListener piecePlacedListener;
 
 
     /**
@@ -76,7 +76,7 @@ public class Game {
         currentPiece = spawnPiece();
         followingPiece = spawnPiece();
         //trigger listener
-        callListener();
+        callPieceUpdatedListener();
     }
 
     /**
@@ -94,8 +94,10 @@ public class Game {
         //attempt to play the piece
         if(grid.playPiece(currentPiece, x, y)){
             Multimedia.playAudioFile(Multimedia.SOUND.PLACE);
+            //handle the after-piece shenanigans (clear lines , gen next piece, update timer)
             nextPiece();
             afterPiece();
+            callPiecePlacedListener();
         }
     }
 
@@ -136,7 +138,15 @@ public class Game {
         followingPiece = spawnPiece();
 
         //trigger listener
-        callListener();
+        callPieceUpdatedListener();
+    }
+
+    /**
+     * used to replace the current piece with a random piece
+     */
+    public void replaceCurrentPiece(){
+        currentPiece = spawnPiece();
+        callPieceUpdatedListener();
     }
 
     public void swapPieces(){
@@ -146,12 +156,21 @@ public class Game {
         followingPiece = temp;
 
         //trigger listener
-        callListener();
+        callPieceUpdatedListener();
     }
 
-    private void callListener(){
-        //used for updating the piece display in game.
+    /**
+     * used by the gamepieces to display the right piece
+     */
+    private void callPieceUpdatedListener(){
         nextPieceListener.nextPiece(currentPiece, followingPiece);
+    }
+
+    /**
+     * used by the timer to detect when a piece has been succesfully played
+     */
+    private void callPiecePlacedListener(){
+        piecePlacedListener.detectPiecePlaced();
     }
 
 
@@ -246,13 +265,13 @@ public class Game {
         this.nextPieceListener = nextPieceListener;
     }
 
-    public void setRotateListener(RotateListener rotateListener){
-        this.rotateListener = rotateListener;
+    public void setPiecePlacedListener(PiecePlacedListener piecePlacedListener){
+        this.piecePlacedListener = piecePlacedListener;
     }
 
     public void rotateCurrentPiece(int noRotations){
         currentPiece.rotate(noRotations);
-        callListener();
+        callPieceUpdatedListener();
     }
 
     //gets for score, lives, level and multiplier
