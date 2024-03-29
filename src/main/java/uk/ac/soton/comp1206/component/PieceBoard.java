@@ -2,7 +2,14 @@ package uk.ac.soton.comp1206.component;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.transform.Rotate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.event.BlockClickedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
+import uk.ac.soton.comp1206.event.RotateListener;
+import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.game.Grid;
 
@@ -10,8 +17,8 @@ import uk.ac.soton.comp1206.game.Grid;
  * for displaying a piece which is going to be played
  */
 public class PieceBoard extends GameBoard {
+    private static final Logger logger = LogManager.getLogger(PieceBoard.class);
 
-    NextPieceListener listener;
     public PieceBoard(int width, int height){
         //piece board values
         super(3, 3, width, height);
@@ -25,5 +32,6 @@ public class PieceBoard extends GameBoard {
             }
         }
     }
+
 
 }

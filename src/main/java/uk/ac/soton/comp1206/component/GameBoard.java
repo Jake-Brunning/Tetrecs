@@ -1,10 +1,12 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.event.BlockClickedListener;
+import uk.ac.soton.comp1206.event.RotateListener;
 import uk.ac.soton.comp1206.game.Grid;
 
 /**
@@ -54,7 +56,8 @@ public class GameBoard extends GridPane {
     /**
      * The listener to call when a specific block is clicked
      */
-    private BlockClickedListener blockClickedListener;
+    protected BlockClickedListener blockClickedListener;
+    protected RotateListener rotateListener;
 
 
     /**
@@ -167,9 +170,19 @@ public class GameBoard extends GridPane {
     private void blockClicked(MouseEvent event, GameBlock block) {
         logger.info("Block clicked: {}", block);
 
+        //if it's a right click rotate the current piece and stop OR if its a click on a piece board rotate the current piece
+        if(event.getButton() == MouseButton.SECONDARY || this instanceof PieceBoard){
+            rotateListener.detectRotation();
+            return;
+        }
+
         if(blockClickedListener != null) {
             blockClickedListener.blockClicked(block);
         }
+    }
+
+    public void setOnRightClick(RotateListener rotateListener){
+        this.rotateListener = rotateListener;
     }
 
 }

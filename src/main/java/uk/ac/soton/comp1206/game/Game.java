@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.event.NextPieceListener;
+import uk.ac.soton.comp1206.event.RotateListener;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class Game {
     private SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
 
     private NextPieceListener nextPieceListener;
+    private RotateListener rotateListener;
 
 
     /**
@@ -242,6 +244,10 @@ public class Game {
 
     public void setNextPieceListener(NextPieceListener nextPieceListener){
         this.nextPieceListener = nextPieceListener;
+    }
+
+    public void setRotateListener(RotateListener rotateListener){
+        this.rotateListener = rotateListener;
     }
 
     public void rotateCurrentPiece(int noRotations){

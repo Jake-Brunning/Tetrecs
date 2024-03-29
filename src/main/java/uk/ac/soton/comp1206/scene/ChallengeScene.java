@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -14,7 +15,9 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
+import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -75,6 +78,20 @@ public class ChallengeScene extends BaseScene {
         game.setNextPieceListener((currentPiece, followingPiece) -> {
             displayCurrentPiece.setPieceToDisplay(currentPiece);
             displayFollowingPiece.setPieceToDisplay(followingPiece);
+        });
+
+        //on right click or click on current piece rotate the current piece
+        board.setOnRightClick((() ->{
+            game.rotateCurrentPiece(1);
+        }));
+
+        displayCurrentPiece.setOnRightClick(() -> {
+            game.rotateCurrentPiece(1);
+        });
+
+        displayFollowingPiece.setOnRightClick(()->{
+            //do nothing. This avoids an error because when right clicking following piece
+            //rotate listener is null without this fucnction
         });
 
         //TODO: add labels between the pieceboards? (saying if its current or next piece)
