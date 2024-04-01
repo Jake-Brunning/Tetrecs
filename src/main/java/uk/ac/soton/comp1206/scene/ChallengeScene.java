@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.animation.Animation;
+import javafx.animation.FillTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
@@ -8,13 +9,16 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +41,10 @@ public class ChallengeScene extends BaseScene {
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
     protected Game game;
     private int noOfFrames = 0; //the number of frames elapsed to play the current piece
+    private int noOfFramesUntilDeath = 1150; //the number of frames until death
+
+    private Rectangle deathBar; //the bar which displays the time until death
+
 
 
     /**
@@ -76,10 +84,10 @@ public class ChallengeScene extends BaseScene {
         pieceDisplayVBox.setSpacing(30);
 
         //add the current piece display to the screen
-        PieceBoard displayCurrentPiece = new PieceBoard(250, 250);
+        PieceBoard displayCurrentPiece = new PieceBoard(200, 200);
 
         //add the following piece display to the screen
-        PieceBoard displayFollowingPiece = new PieceBoard(150, 150);
+        PieceBoard displayFollowingPiece = new PieceBoard(100, 100);
 
         //define what to do when listener is invoked
         //display the current piece and the following piece in the pieceboards
@@ -128,13 +136,27 @@ public class ChallengeScene extends BaseScene {
         hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum ,livesText, livesNum);
         mainPane.setTop(hBox);
 
+
         //set up timer for animations and etc
         final int delayBetweenFrames = 10; //the delay between frames in ms
         Timeline timer = setUpTimer();
 
-        //reset the timer when a piece is played
-        game.setPiecePlacedListener(this::resetTimer);
+        //set up rectangle which shrinks to create death timer
+        deathBar = new Rectangle();
+        deathBar.setWidth(gameWindow.getWidth());
+        deathBar.setHeight(20);
+        deathBar.setArcHeight(1);
+        deathBar.setArcWidth(1);
+        deathBar.setX(0);
+        deathBar.setY(10);
+        mainPane.setBottom(deathBar);
 
+
+        //reset the timer when a piece is played
+        game.setPiecePlacedListener(this::resetWindowAnimations);
+
+        //'reset' animations
+        resetWindowAnimations();
 
         //play game music
         Multimedia.playBackgroundMusic(Multimedia.MUSIC.GAME);
@@ -144,6 +166,11 @@ public class ChallengeScene extends BaseScene {
         timer.play();
 
 
+    }
+
+    private void resetWindowAnimations(){
+        resetTimer();
+        resetDeathBar(noOfFramesUntilDeath);
     }
 
     /**
@@ -168,10 +195,13 @@ public class ChallengeScene extends BaseScene {
                 //check if time has run out to place the current piece
                 //recalculated each frame in case level increases
                 //formula as spec : 12000 - (500 * currentLevel) : min value 2500. Divide by delay between frames to convert to frames
-                int noOfFramesUntilDeath = (12000 - (500 * game.getLevel().get())) / delayBetweenFrames;
+                noOfFramesUntilDeath = (12000 - (500 * game.getLevel().get())) / delayBetweenFrames;
                 if(noOfFramesUntilDeath < 250){
                     noOfFramesUntilDeath = 250;
                 }
+
+                //adjust the bar
+                adjustDeathBar(noOfFrames, noOfFramesUntilDeath);
 
                 //check if your dead
                 if(noOfFrames == noOfFramesUntilDeath){
@@ -182,8 +212,8 @@ public class ChallengeScene extends BaseScene {
                     //change the current piece
                     game.replaceCurrentPiece();
 
-                    //reset timer
-                    resetTimer();
+                    //reset the window
+                    resetWindowAnimations();
 
                     //check if lives is  zero
                     if(game.getLives().get() == 0){
@@ -192,6 +222,28 @@ public class ChallengeScene extends BaseScene {
                 }
             }
         }));
+    }
+
+    /**
+     *
+     * @param currentFrame the amount of frames elapsed in the animation
+     * @param totalFrames the amount of frames for the bar goes to 0
+     */
+    private void adjustDeathBar(int currentFrame, int totalFrames){
+        //get the percent of the bar which should be full
+        double howFar = (double) currentFrame / (double) totalFrames;
+
+        //subtract it from a full bar to get the bar decreasing effect
+        deathBar.setWidth(gameWindow.getWidth() - (howFar * (double) gameWindow.getWidth()));
+    }
+
+    private void resetDeathBar(int totalFrames){
+        //reset the width
+        deathBar.setWidth(gameWindow.getWidth());
+
+        //reset the transition to red
+        FillTransition fillTransition = new FillTransition(new Duration(totalFrames * 10), deathBar, Color.GREEN, Color.RED);
+        fillTransition.playFromStart();
     }
 
     private void resetTimer(){

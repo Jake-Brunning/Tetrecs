@@ -272,6 +272,7 @@ public class Game {
     public void rotateCurrentPiece(int noRotations){
         currentPiece.rotate(noRotations);
         callPieceUpdatedListener();
+        Multimedia.playAudioFile(Multimedia.SOUND.ROTATE);
     }
 
     //gets for score, lives, level and multiplier
