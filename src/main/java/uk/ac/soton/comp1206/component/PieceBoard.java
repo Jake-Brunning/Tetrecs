@@ -40,15 +40,11 @@ public class PieceBoard extends GameBoard {
         }
     }
 
-    public Circle createPlaceCircle(){
-        Circle circle  = new Circle();
-
-        //set colouring width and transparency
-        circle.setOpacity(0.7);
-        circle.setFill(Color.BLACK);
-        circle.setRadius(this.width / 12);
-        
-        return circle;
+    /**
+     * draw a circle to display where to click the piece
+     */
+    public void drawCircle(){
+        getBlock(1,1).drawCircle();
     }
 
 }

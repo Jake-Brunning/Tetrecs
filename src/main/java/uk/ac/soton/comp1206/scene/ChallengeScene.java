@@ -77,12 +77,13 @@ public class ChallengeScene extends BaseScene {
         var mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
 
-        var board = new GameBoard(game.getGrid(),gameWindow.getWidth()/2,gameWindow.getWidth()/2);
+        var board = new GameBoard(game.getGrid(), (double) gameWindow.getWidth() /2, (double) gameWindow.getWidth() /2);
         mainPane.setCenter(board);
 
         //vbox for piece displays
         VBox pieceDisplayVBox = new VBox();
         pieceDisplayVBox.setSpacing(30);
+
 
         //Create the following display pieceboard
         PieceBoard displayCurrentPiece = new PieceBoard(200, 200);
@@ -95,6 +96,7 @@ public class ChallengeScene extends BaseScene {
         game.setNextPieceListener((currentPiece, followingPiece) -> {
             displayCurrentPiece.setPieceToDisplay(currentPiece);
             displayFollowingPiece.setPieceToDisplay(followingPiece);
+            displayCurrentPiece.drawCircle();
         });
 
         //on right click or click on current piece rotate the current piece
@@ -115,11 +117,6 @@ public class ChallengeScene extends BaseScene {
         pieceDisplayVBox.getChildren().addAll(displayCurrentPiece, displayFollowingPiece);
         mainPane.setRight(pieceDisplayVBox);
         pieceDisplayVBox.setAlignment(Pos.BOTTOM_RIGHT);
-
-
-        //add place circle to the screen
-        Circle placeCircle = displayCurrentPiece.createPlaceCircle();
-        root.getChildren().add(placeCircle);
 
         //Handle block on gameboard grid being clicked
         board.setOnBlockClick(this::blockClicked);

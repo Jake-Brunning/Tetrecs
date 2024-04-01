@@ -4,6 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
 import javafx.scene.paint.*;
 import org.apache.logging.log4j.LogManager;
@@ -140,6 +141,20 @@ public class GameBlock extends Canvas {
         //Border
         gc.setStroke(Color.BLACK);
         gc.strokeRect(0,0,width,height);
+    }
+
+    /**
+     * draw a circle on this gameblock
+     */
+    public void drawCircle(){
+        var gc = getGraphicsContext2D();
+
+        //clear rect and repaint rect so dont draw over previous circle
+        paint();
+
+        //colour is transparent white
+        gc.setFill(Color.rgb(255, 255, 255, 0.7));
+        gc.fillOval(0, 0, width , height);
     }
 
     /**
