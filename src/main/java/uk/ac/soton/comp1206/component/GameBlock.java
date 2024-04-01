@@ -89,6 +89,9 @@ public class GameBlock extends Canvas {
 
         //When the value property is updated, call the internal updateValue method
         value.addListener(this::updateValue);
+
+        this.setOnMouseEntered(e-> drawCircle());
+        this.setOnMouseExited(e-> paint());
     }
 
     /**
@@ -153,7 +156,7 @@ public class GameBlock extends Canvas {
         paint();
 
         //colour is transparent white
-        gc.setFill(Color.rgb(255, 255, 255, 0.7));
+        gc.setFill(Color.rgb(128, 128, 128, 0.7));
         gc.fillOval(0, 0, width , height);
     }
 

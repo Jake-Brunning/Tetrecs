@@ -99,6 +99,9 @@ public class Game {
             afterPiece();
             callPiecePlacedListener();
         }
+        else{
+            Multimedia.playAudioFile(Multimedia.SOUND.FAIL);
+        }
     }
 
     /**

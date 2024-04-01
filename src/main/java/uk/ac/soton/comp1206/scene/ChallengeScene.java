@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
+import uk.ac.soton.comp1206.event.BlockClickedListener;
 import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.GamePiece;
@@ -46,7 +47,10 @@ public class ChallengeScene extends BaseScene {
 
     private Rectangle deathBar; //the bar which displays the time until death
 
+    private int x = 0; //the current x position of the keyboard
+    private int y = 0; //the current y position of the keyboard
 
+    private GameBoard board;
 
     /**
      * Create a new Single Player challenge scene
@@ -77,13 +81,12 @@ public class ChallengeScene extends BaseScene {
         var mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
 
-        var board = new GameBoard(game.getGrid(), (double) gameWindow.getWidth() /2, (double) gameWindow.getWidth() /2);
+        board = new GameBoard(game.getGrid(), (double) gameWindow.getWidth() /2, (double) gameWindow.getWidth() /2);
         mainPane.setCenter(board);
 
         //vbox for piece displays
         VBox pieceDisplayVBox = new VBox();
         pieceDisplayVBox.setSpacing(30);
-
 
         //Create the following display pieceboard
         PieceBoard displayCurrentPiece = new PieceBoard(200, 200);
@@ -96,6 +99,7 @@ public class ChallengeScene extends BaseScene {
         game.setNextPieceListener((currentPiece, followingPiece) -> {
             displayCurrentPiece.setPieceToDisplay(currentPiece);
             displayFollowingPiece.setPieceToDisplay(followingPiece);
+            //redraw centre circle
             displayCurrentPiece.drawCircle();
         });
 
@@ -274,7 +278,50 @@ public class ChallengeScene extends BaseScene {
                 //gameWindow.loadScene(new MenuScene(gameWindow));
                 gameWindow.startMenu();
             }
+            //moving position on the grid
+            else if(key.getCode() == KeyCode.W || key.getCode() == KeyCode.UP){
+                logger.info("W | UP key press detected");
+                board.getBlock(x, y).paint();
+                y--;
+                keepXandYinGrid();
+            } else if (key.getCode() == KeyCode.A || key.getCode() == KeyCode.LEFT) {
+                logger.info("A | LEFT key press detected");
+                board.getBlock(x, y).paint();
+                x--;
+                keepXandYinGrid();
+            } else if (key.getCode() == KeyCode.S || key.getCode() == KeyCode.DOWN) {
+                logger.info("S | DOWN key press detected");
+                board.getBlock(x, y).paint();
+                y++;
+                keepXandYinGrid();
+            } else if (key.getCode() == KeyCode.D || key.getCode() == KeyCode.RIGHT) {
+                logger.info("D | RIGHT key press detected");
+                board.getBlock(x, y).paint();
+                x++;
+                keepXandYinGrid();
+            } else if (key.getCode() == KeyCode.ENTER || key.getCode() == KeyCode.X) {
+                blockClicked(board.getBlock(x, y));
+            }
         });
+    }
+
+    private void keepXandYinGrid(){
+        if(x < 0){
+            x = 0;
+        }
+        if(x > game.getCols() - 1){
+            x = game.getCols() - 1;
+        }
+
+        if(y < 0){
+            y = 0;
+        }
+        if(y > game.getRows() - 1){
+            y = game.getRows() - 1;
+        }
+
+        //update the block so it displays a circle
+        board.getBlock(x, y).drawCircle();
     }
 
     private Label generateUIText(String s){ //returns a label with the specified string in a cool font
@@ -291,7 +338,6 @@ public class ChallengeScene extends BaseScene {
         shadow.setOffsetY(3);
         shadow.setWidth(20);
         shadow.setHeight(20);
-
 
         shadow.setColor(Color.BLACK);
         label.setEffect(shadow);
