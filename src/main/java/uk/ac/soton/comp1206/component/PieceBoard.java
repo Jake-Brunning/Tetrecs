@@ -2,7 +2,10 @@ package uk.ac.soton.comp1206.component;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.transform.Rotate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +27,10 @@ public class PieceBoard extends GameBoard {
         super(3, 3, width, height);
     }
 
+    /**
+     * Displays the piece onto the pieceboard
+     * @param gamePiece the piece to display
+     */
     public void setPieceToDisplay(GamePiece gamePiece){
         int[][] blocks = gamePiece.getBlocks();
         for(int j  = 0; j < this.rows; j++){
@@ -33,5 +40,15 @@ public class PieceBoard extends GameBoard {
         }
     }
 
+    public Circle createPlaceCircle(){
+        Circle circle  = new Circle();
+
+        //set colouring width and transparency
+        circle.setOpacity(0.7);
+        circle.setFill(Color.BLACK);
+        circle.setRadius(this.width / 12);
+        
+        return circle;
+    }
 
 }

@@ -18,6 +18,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -83,10 +84,10 @@ public class ChallengeScene extends BaseScene {
         VBox pieceDisplayVBox = new VBox();
         pieceDisplayVBox.setSpacing(30);
 
-        //add the current piece display to the screen
+        //Create the following display pieceboard
         PieceBoard displayCurrentPiece = new PieceBoard(200, 200);
 
-        //add the following piece display to the screen
+        //Create the following display pieceboard
         PieceBoard displayFollowingPiece = new PieceBoard(100, 100);
 
         //define what to do when listener is invoked
@@ -110,12 +111,15 @@ public class ChallengeScene extends BaseScene {
             game.swapPieces();
         });
 
-        //TODO: add labels between the pieceboards? (saying if its current or next piece)
         //add pieceboards to the screen
         pieceDisplayVBox.getChildren().addAll(displayCurrentPiece, displayFollowingPiece);
         mainPane.setRight(pieceDisplayVBox);
         pieceDisplayVBox.setAlignment(Pos.BOTTOM_RIGHT);
 
+
+        //add place circle to the screen
+        Circle placeCircle = displayCurrentPiece.createPlaceCircle();
+        root.getChildren().add(placeCircle);
 
         //Handle block on gameboard grid being clicked
         board.setOnBlockClick(this::blockClicked);
