@@ -1,5 +1,6 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.animation.FillTransition;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
@@ -7,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
 import javafx.scene.paint.*;
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -110,7 +112,7 @@ public class GameBlock extends Canvas {
 
     public void paint() {
         //If the block is empty, paint as empty
-        if(value.get() == 0) {
+        if (value.get() == 0) {
             paintEmpty();
         } else {
             //If the block is not empty, paint with the colour represented by the value
@@ -133,8 +135,8 @@ public class GameBlock extends Canvas {
         gc.setFill(Color.TRANSPARENT);
         gc.fillRect(0, 0, width, height);
 
-
         //TODO: fix glow effect. its not cleared when peices are cleared leading to it looking like no pieces have been cleared.
+
 
         //glow effect on the rects makes the pieces look shiny
         Glow glow = new Glow();

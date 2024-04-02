@@ -31,12 +31,13 @@ public class Multimedia {
         File file = new File(filePath);
         String uriString = file.toURI().toString();
         audioPlayer = new MediaPlayer(new Media(uriString));
+        audioPlayer.setVolume(0.1); //set audio volume
         audioPlayer.play();
     }
 
     /**
      *
-     * @param sound : the sound to play as an enum. Its converted to a filepath of that sound
+     * @param sound : the sound to play as an enum. It's converted to a filepath of that sound
      */
     public static void playAudioFile(SOUND sound){
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sounds" + File.separator;
@@ -71,6 +72,7 @@ public class Multimedia {
 
         backgroundMusicPlayer = new MediaPlayer(new Media(uriString));
         backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE); //make it so the music loops forever
+        backgroundMusicPlayer.setVolume(0.1); //set volume
         backgroundMusicPlayer.play();
     }
 

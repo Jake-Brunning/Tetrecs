@@ -51,7 +51,7 @@ public class InstructionsScene extends BaseScene{
         Button button = new Button();
         button.setText("Hello world");
 
-        //needed otherwise it crashes.
+        //set the root node.
         root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
         root.getChildren().add(button);
 

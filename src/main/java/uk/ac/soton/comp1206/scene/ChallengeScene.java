@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -34,6 +35,8 @@ import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
+
+import java.util.Optional;
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
@@ -147,13 +150,7 @@ public class ChallengeScene extends BaseScene {
         Timeline timer = setUpTimer();
 
         //set up rectangle which shrinks to create death timer
-        deathBar = new Rectangle();
-        deathBar.setWidth(gameWindow.getWidth());
-        deathBar.setHeight(20);
-        deathBar.setArcHeight(1);
-        deathBar.setArcWidth(1);
-        deathBar.setX(0);
-        deathBar.setY(10);
+        setUpDeathBar();
         mainPane.setBottom(deathBar);
 
 
@@ -173,6 +170,20 @@ public class ChallengeScene extends BaseScene {
 
     }
 
+    /**
+     * sets up the death bar at the bottom of the screen. FYI deathbar is an attribute of challengescene
+     * @return a rectangle for the deathbar
+     */
+    private void setUpDeathBar(){
+        deathBar = new Rectangle();
+        deathBar.setWidth(gameWindow.getWidth());
+        deathBar.setHeight(20);
+        deathBar.setArcHeight(1);
+        deathBar.setArcWidth(1);
+        deathBar.setX(0);
+        deathBar.setY(10);
+    }
+
     private void resetWindowAnimations(){
         resetTimer();
         resetDeathBar(noOfFramesUntilDeath);
@@ -180,6 +191,7 @@ public class ChallengeScene extends BaseScene {
 
     /**
      * sets up the timeline to use for the challenge scene. Cannot extend keyframe so needs to be defined here
+     * (A lot of the game logic to do with losing lives is in this function)
      * @return returns the timeline.
      */
     private Timeline setUpTimer(){
@@ -214,16 +226,21 @@ public class ChallengeScene extends BaseScene {
                     //decrease lives by one
                     game.getLives().set(game.getLives().get() - 1);
 
+                    //if no lives are left die
+                    //check if lives is  zero
+                    if(game.getLives().get() == 0){
+                        logger.info("lost");
+                        Multimedia.playAudioFile(Multimedia.SOUND.EXPLODE);
+                        gameWindow.cleanup();
+                        gameWindow.startScores(game);
+                    }
+
                     //change the current piece
                     game.replaceCurrentPiece();
 
                     //reset the window
                     resetWindowAnimations();
 
-                    //check if lives is  zero
-                    if(game.getLives().get() == 0){
-                        logger.info("lost");
-                    }
                 }
             }
         }));
@@ -382,6 +399,7 @@ public class ChallengeScene extends BaseScene {
         intiliseKeyboardInputs();
         game.start();
     }
+
 
 
 }
