@@ -71,26 +71,8 @@ public class ScoreScene extends BaseScene{
         backImage.setFitHeight(gameWindow.getHeight());
         root.getChildren().add(backImage);
 
-        //extract the local scores
-        localScores = extractScoresAndNamesAsPair(FileReader.readScoresAndNamesAsString());
-
-        //sort the array list so scores appear in order
-        localScores.sort(Comparator.comparing(x -> -x.getValue()));
-
         //vbox to display the scores vertically
-        VBox scoresVBox = new VBox();
-        scoresVBox.setSpacing(10);
-        scoresVBox.setMaxHeight(gameWindow.getHeight());
-        scoresVBox.setPadding(new Insets(75, 0, 0, 75)); //set padding so it doesn't hug the border
-
-        for(int i = 0; i < localScores.size(); i++){
-            //add the new label.
-            scoresVBox.getChildren().add(createLabel(localScores.get(i).getKey() + ": " + localScores.get(i).getValue().toString(), i));
-            //only want to display 10 highest scores. If there's more than 10 scores in the file, break.
-            if(i == 9){
-                break;
-            }
-        }
+        VBox scoresVBox = createScoresDisplay();
 
         //make borderpane to add vbox
         BorderPane borderPane = new BorderPane();
@@ -117,10 +99,41 @@ public class ScoreScene extends BaseScene{
             FileReader.writeToScoresFile(namegetter.getText().replace(" ", "-") + " " + game.getScore().get());
             //make button and namefield disappear
             borderPane.getChildren().remove(hbox);
+            //update the score display incase the current players score is in the top 10
+            borderPane.getChildren().remove(scoresVBox);
+            borderPane.setLeft(createScoresDisplay());
         });
 
         //play backgroundmusic
         Multimedia.playBackgroundMusic(Multimedia.MUSIC.END);
+    }
+
+    /**
+     * gets all scores saved and creates a vbox displaying the 10 highest scores.
+     * @return the vbox containing labels for the 10 highest scores
+     */
+    private VBox createScoresDisplay(){
+        //extract the local scores
+        localScores = extractScoresAndNamesAsPair(FileReader.readScoresAndNamesAsString());
+
+        //sort the array list so scores appear in order
+        localScores.sort(Comparator.comparing(x -> -x.getValue()));
+
+        //vbox to display the scores vertically
+        VBox scoresVBox = new VBox();
+        scoresVBox.setSpacing(10);
+        scoresVBox.setMaxHeight(gameWindow.getHeight());
+        scoresVBox.setPadding(new Insets(75, 0, 0, 75)); //set padding so it doesn't hug the border
+
+        for(int i = 0; i < localScores.size(); i++){
+            //add the new label.
+            scoresVBox.getChildren().add(createLabel(localScores.get(i).getKey() + ": " + localScores.get(i).getValue().toString(), i));
+            //only want to display 10 highest scores. If there's more than 10 scores in the file, break.
+            if(i == 9){
+                break;
+            }
+        }
+        return scoresVBox;
     }
 
 
@@ -173,7 +186,6 @@ public class ScoreScene extends BaseScene{
             }
         });
     }
-
 
     /**
      * get name from the user
