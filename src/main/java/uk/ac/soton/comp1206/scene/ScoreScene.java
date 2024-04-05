@@ -100,6 +100,12 @@ public class ScoreScene extends BaseScene{
             borderPane.setLeft(createScoresDisplay(extractScoresAndNamesAsPair(FileReader.readScoresAndNamesAsString())));
         });
 
+
+        //create a title to make it look better
+        Label title = createLabel("HIGH SCORES", 7);
+        title.setFont(new Font("IMPACT", 40));
+        borderPane.setTop(title);
+
         //load online scores
         loadOnlineScores();
 
@@ -201,6 +207,7 @@ public class ScoreScene extends BaseScene{
         Platform.runLater(() ->{
             logger.info("Recieved communiication");
             addOnlineScoreToDisplay(response);
+
         });
 
     }
@@ -214,17 +221,36 @@ public class ScoreScene extends BaseScene{
         logger.info("Handling communication");
         //format the message
         message = message.replace("HISCORES ", "");
-        VBox temp = createScoresDisplay(extractScoresAndNamesAsPair(message.split("\n")));
 
+        //create vbox
+        var arrListTemp = extractScoresAndNamesAsPair(message.split("\n"));
+        VBox temp = createScoresDisplay(arrListTemp);
+
+        //write the score online if its large enough (size checked in function)
+        writeOnlineScore(arrListTemp.get(arrListTemp.size() - 1).getValue(), arrListTemp.get(arrListTemp.size() - 1).getKey());
+
+        //settings to make it look nicer
         onlineScoresVbox.setSpacing(10);
         onlineScoresVbox.setMaxHeight(gameWindow.getHeight());
         onlineScoresVbox.setPadding(new Insets(50, 50, 50, 50)); //set padding so it doesn't hug the border
+
+        //make sure vbox is clear of any previous children
+        onlineScoresVbox.getChildren().clear();
 
         //add the message to the display
         onlineScoresVbox.getChildren().addAll(temp.getChildren());
 
     }
 
+    /**
+     * write the specified score to the server if its large enough
+     */
+    private void writeOnlineScore(int score, String name){
+        if(game.getScore().get() > score){
+            com.send("HISCORE " + name + ":" + score);
+            com.send("HISCORES");
+        }
+    }
 
 
 
