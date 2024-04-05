@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +43,9 @@ public class LobbyScene extends BaseScene {
 
     //displays the name of current channels
     private VBox channelDisplay;
+
+    //displays all people in the current channel
+    private VBox namesDisplay;
 
     //the channel the user is currently part of
     private String currentChannel = "";
@@ -88,8 +92,19 @@ public class LobbyScene extends BaseScene {
         //add create channel option
         borderPane.setBottom(setUpCreateChannel());
 
+        //add title
+        borderPane.setTop(makeChannelTitle());
+
         //add borderpane to root
         root.getChildren().add(borderPane);
+
+        //format name display properties
+        namesDisplay = new VBox();
+        namesDisplay.setSpacing(5);
+
+
+        //add name display
+        borderPane.setCenter(namesDisplay);
 
         //add listener
         com.addListener(this::handleResponse);
@@ -102,7 +117,7 @@ public class LobbyScene extends BaseScene {
     }
 
     private Timeline setUpTimer(){
-        return new Timeline(new KeyFrame(Duration.millis(500), new EventHandler<ActionEvent>() {
+        return new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
             //what to do every frame (so 500 ms in this case)
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -128,11 +143,21 @@ public class LobbyScene extends BaseScene {
             //handle joining the channel
             Platform.runLater(() ->{
                 handleJoiningAChannel(response);
+                makeNameText("NAMES: ");
             });
         }
         else if(response.startsWith("ERROR")){
             logger.info(response);
         }
+        else if(response.startsWith("NICK")){
+            Platform.runLater(() ->{
+                handleNick(response);
+            });
+        }
+    }
+
+    private void handleNick(String response){
+        makeNameText(response.replace("NICK ", ""));
     }
 
     private void handleJoiningAChannel(String response){
@@ -157,7 +182,6 @@ public class LobbyScene extends BaseScene {
 
         //update the display
         channelDisplay.getChildren().clear();
-        channelDisplay.getChildren().add(makeChannelTitle());
         channelDisplay.getChildren().addAll(channelButtons);
     }
 
@@ -184,6 +208,7 @@ public class LobbyScene extends BaseScene {
         Label label = new Label("CHANNELS");
         label.setFont(new Font("Impact", 40));
         label.setTextFill(Color.GREY);
+        label.setAlignment(Pos.TOP_CENTER);
 
         //create new dropshadow
         DropShadow dropShadow = new DropShadow();
@@ -194,6 +219,15 @@ public class LobbyScene extends BaseScene {
 
         label.setEffect(dropShadow);
         return label;
+    }
+
+    private void makeNameText(String name){
+        Label text = new Label();
+        text.setText(name);
+        text.setFont(new Font("Arial Bold", 15));
+        text.setTextFill(Color.ANTIQUEWHITE);
+
+        namesDisplay.getChildren().addAll(text);
     }
 
     private HBox setUpCreateChannel(){
@@ -222,6 +256,10 @@ public class LobbyScene extends BaseScene {
         return hbox;
     }
 
+    /**
+     * create the name display
+     * @return the vbox containing all nicknames
+     */
 
     private void intiliseKeyboardInputs(){//intilise the events for the keyboard inputs
         //here, so you can get back to the menu
