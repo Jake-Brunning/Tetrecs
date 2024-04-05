@@ -93,6 +93,10 @@ public class GameWindow {
         loadScene(new InstructionsScene(this));
     }
 
+    public void startLobbyScene(){
+        loadScene(new LobbyScene(this));
+    }
+
     /**
      * displays scores
      * @param game for displaying the final gamestate

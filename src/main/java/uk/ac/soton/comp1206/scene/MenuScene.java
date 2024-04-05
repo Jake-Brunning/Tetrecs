@@ -80,9 +80,17 @@ public class MenuScene extends BaseScene {
         //make the button to display the instruction
         Button instrButton = constructMenuButtons("Instructions");
 
+        //make the button to display multiplayer
+        Button multButton = constructMenuButtons("Multiplayer");
+
         //add the event the display an instruction scene
         instrButton.setOnMouseClicked(e-> {
             gameWindow.startInstructions();
+        });
+
+        //add the event to display multiplayer scene
+        multButton.setOnMouseClicked(e -> {
+                gameWindow.startLobbyScene();
         });
 
         //make button to display exit game
@@ -105,7 +113,7 @@ public class MenuScene extends BaseScene {
         BorderPane.setAlignment(ecsGames, Pos.BOTTOM_RIGHT);
 
         //add buttons to screen
-        vbox.getChildren().addAll(playButton, instrButton, exitButton);
+        vbox.getChildren().addAll(playButton, instrButton, multButton, exitButton);
         vbox.setAlignment(Pos.CENTER);
         mainPane.setCenter(vbox);
 
