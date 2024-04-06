@@ -17,10 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -116,8 +113,6 @@ public class LobbyScene extends BaseScene {
         //add borderpane to root
         root.getChildren().add(borderPane);
 
-        handleIncomingMessage("hello world");
-
         //format name display properties
         namesDisplay = new VBox();
         namesDisplay.setSpacing(5);
@@ -141,17 +136,17 @@ public class LobbyScene extends BaseScene {
      */
     private ScrollPane chatbox(){
         //set up scroll pane which contains text
-        ScrollPane toReturn = new ScrollPane();
-        toReturn.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        toReturn.setPrefWidth(300);
-        toReturn.setPrefHeight(gameWindow.getHeight() - 50);
+        ScrollPane scrollPane= new ScrollPane();
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPane.setPrefWidth(300);
+        scrollPane.setPrefHeight(gameWindow.getHeight() - 50);
 
 
         //add text flow to scrollpane
         myTextFlow = new TextFlow();
         myTextFlow.setTextAlignment(TextAlignment.LEFT);
-        toReturn.setContent(myTextFlow);
-        return toReturn;
+        scrollPane.setContent(myTextFlow);
+        return scrollPane;
     }
 
 
