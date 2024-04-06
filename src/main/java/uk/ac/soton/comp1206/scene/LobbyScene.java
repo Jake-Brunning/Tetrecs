@@ -10,17 +10,22 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,6 +54,12 @@ public class LobbyScene extends BaseScene {
 
     //the channel the user is currently part of
     private String currentChannel = "";
+
+    //the text flow which contains all messages which get recieved on the channel
+    private TextFlow myTextFlow;
+
+    //name of this user
+    private String name = "";
 
     private static final Logger logger = LogManager.getLogger(LobbyScene.class);
 
@@ -89,19 +100,27 @@ public class LobbyScene extends BaseScene {
         //add channel vbox to borderpane
         borderPane.setLeft(channelDisplay);
 
-        //add create channel option
-        borderPane.setBottom(setUpCreateChannel());
+        //add create channel option and sending message
+        HBox createChannelSendMessage = setUpCreateChannel();
+
+        createChannelSendMessage.getChildren().add(setUpSendMessage());
+        borderPane.setBottom(createChannelSendMessage);
 
         //add title
         borderPane.setTop(makeChannelTitle());
 
+        //add lobby chat
+        borderPane.setRight(chatbox());
+        borderPane.getChildren().add(myTextFlow);
+
         //add borderpane to root
         root.getChildren().add(borderPane);
+
+        handleIncomingMessage("hello world");
 
         //format name display properties
         namesDisplay = new VBox();
         namesDisplay.setSpacing(5);
-
 
         //add name display
         borderPane.setCenter(namesDisplay);
@@ -116,6 +135,30 @@ public class LobbyScene extends BaseScene {
 
     }
 
+    /**
+     * set up the lobby chat
+     * @return the scrollpane containg the chat
+     */
+    private ScrollPane chatbox(){
+        //set up scroll pane which contains text
+        ScrollPane toReturn = new ScrollPane();
+        toReturn.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        toReturn.setPrefWidth(300);
+        toReturn.setPrefHeight(gameWindow.getHeight() - 50);
+
+
+        //add text flow to scrollpane
+        myTextFlow = new TextFlow();
+        myTextFlow.setTextAlignment(TextAlignment.LEFT);
+        toReturn.setContent(myTextFlow);
+        return toReturn;
+    }
+
+
+    /**
+     * set up the timer for handling getting channels
+     * @return the timer
+     */
     private Timeline setUpTimer(){
         return new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
             //what to do every frame (so 500 ms in this case)
@@ -153,11 +196,46 @@ public class LobbyScene extends BaseScene {
             Platform.runLater(() ->{
                 handleNick(response);
             });
+        } else if (response.startsWith("MSG")) {
+            Platform.runLater(() ->{
+                handleIncomingMessage(response);
+            });
+        } else if (response.startsWith("USERS")){
+            Platform.runLater(() -> {
+                handleIncomingUsers(response);
+            });
         }
     }
 
+    private void handleIncomingUsers(String response){
+        response = response.replace("USERS ", "");
+
+        String[] names = response.split("\n");
+        for(String x : names){
+            makeNameText(x);
+        }
+    }
+
+    /**
+     * add incoming message to the chat box
+     * @param response the message
+     */
+    private void handleIncomingMessage(String response){
+        //remove msg header
+        response = response.replace("MSG ", "");
+        response += "\n";
+
+        //create and add text
+        Text text = new Text(response);
+        text.setFill(Color.GREEN);
+        text.setFont(new Font("Arial", 15));
+
+        myTextFlow.getChildren().add(text);
+    }
+
     private void handleNick(String response){
-        makeNameText(response.replace("NICK ", ""));
+        name = response.replace("NICK ", "");
+        this.name = name;
     }
 
     private void handleJoiningAChannel(String response){
@@ -253,6 +331,32 @@ public class LobbyScene extends BaseScene {
 
         hbox.getChildren().addAll(textField, button);
         hbox.setAlignment(Pos.BOTTOM_LEFT);
+        return hbox;
+    }
+
+    private HBox setUpSendMessage(){
+        HBox hbox = new HBox();
+
+        //add a textfield and a submit button
+        Button button = new Button("SEND");
+        button.setFont(new Font("Impact", 20));
+        button.setBackground(null);
+        button.setTextFill(Color.GREEN);
+        button.setOnMouseEntered(mouseEvent -> button.setTextFill(Color.DARKGREEN));
+        button.setOnMouseExited(mouseEvent -> button.setTextFill(Color.GREEN));
+
+        //set up textfield for message content
+        TextField textField = new TextField();
+        textField.setText("MESSAGE");
+        textField.setFont(new Font("Arial", 20));
+
+        //send message to the server
+        button.setOnMouseClicked(e ->{
+            com.send("MSG " + textField.getText());
+        });
+
+        hbox.getChildren().addAll(textField, button);
+        hbox.setAlignment(Pos.BOTTOM_RIGHT);
         return hbox;
     }
 
