@@ -113,6 +113,12 @@ public class GameBoard extends GridPane {
     protected void build() {
         logger.info("Building grid: {} x {}",cols,rows);
 
+        //if this is a pieceboard dont change blocks on mouse hovering over it
+        boolean highlightOnHover = true;
+
+        if(this instanceof PieceBoard){
+            highlightOnHover = false;
+        }
         setMaxWidth(width);
         setMaxHeight(height);
 
@@ -122,7 +128,7 @@ public class GameBoard extends GridPane {
 
         for(var y = 0; y < rows; y++) {
             for (var x = 0; x < cols; x++) {
-                createBlock(x,y);
+                createBlock(x,y, highlightOnHover);
             }
         }
     }
@@ -132,12 +138,12 @@ public class GameBoard extends GridPane {
      * @param x column
      * @param y row
      */
-    protected GameBlock createBlock(int x, int y) {
+    protected GameBlock createBlock(int x, int y, boolean highlightOnHover) {
         var blockWidth = width / cols;
         var blockHeight = height / rows;
 
         //Create a new GameBlock UI component
-        GameBlock block = new GameBlock(this, x, y, blockWidth, blockHeight);
+        GameBlock block = new GameBlock(this, x, y, blockWidth, blockHeight, highlightOnHover);
 
         //Add to the GridPane
         add(block,x,y);

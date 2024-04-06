@@ -1,8 +1,11 @@
 package uk.ac.soton.comp1206.scene;
 
 import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -16,10 +19,14 @@ import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp1206.component.PieceBoard;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 import uk.ac.soton.comp1206.helpers.getImage;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * The main menu of the game. Provides a gateway to the rest of the game.
@@ -161,6 +168,36 @@ public class MenuScene extends BaseScene {
      */
     private void startGame(ActionEvent event) {
         gameWindow.startChallenge();
+    }
+
+
+    /**
+     * creates a timeline which handles the animation of the pieces falling down the scree
+     * @return a timer which handles this
+     */
+    private Timeline setUpTimer(){
+        final int delayBetweenFrames = 500; //duration between frames in milliseconds
+
+        //the list of pieces falling down the screen
+        ArrayList<PieceBoard> pieceBoards = new ArrayList<>();
+        Random rng = new Random();
+
+        return new Timeline(new KeyFrame(Duration.millis(delayBetweenFrames), new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+                for(PieceBoard x : pieceBoards){
+                    //move the pieceboard down the screen
+                    x.layoutXProperty().set(x.layoutXProperty().get() + 10);
+                    //1/4 chance to rotate a piece
+                    if(rng.nextInt(4) == 1){
+
+                    }
+                }
+            }
+
+        }));
     }
 
 }

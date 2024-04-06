@@ -4,13 +4,15 @@ import javafx.animation.FillTransition;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.DirectionalLight;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.Glow;
+import javafx.scene.effect.*;
 import javafx.scene.paint.*;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.file.DirectoryNotEmptyException;
 
 /**
  * The Visual User Interface component representing a single block in the grid.
@@ -75,7 +77,7 @@ public class GameBlock extends Canvas {
      * @param width the width of the canvas to render
      * @param height the height of the canvas to render
      */
-    public GameBlock(GameBoard gameBoard, int x, int y, double width, double height) {
+    public GameBlock(GameBoard gameBoard, int x, int y, double width, double height, boolean highlightOnMouseHover) {
         this.gameBoard = gameBoard;
         this.width = width;
         this.height = height;
@@ -92,9 +94,24 @@ public class GameBlock extends Canvas {
         //When the value property is updated, call the internal updateValue method
         value.addListener(this::updateValue);
 
-        this.setOnMouseEntered(e-> drawCircle());
-        this.setOnMouseExited(e-> paint());
+        if(highlightOnMouseHover){
+            this.setOnMouseEntered(e-> highlightBlock());
+            this.setOnMouseExited(e-> paint());
+        }
     }
+
+    private void highlightBlock(){
+        //highlight the block
+        var gc = getGraphicsContext2D();
+
+        //clear rect and repaint rect so dont draw over previous circle
+        paint();
+
+        //colour is transparent white
+        gc.setStroke(Color.rgb(255, 255, 255, 1));
+        gc.fillRect(0, 0, width, height);
+    }
+
 
     /**
      * When the value of this block is updated,
@@ -126,16 +143,12 @@ public class GameBlock extends Canvas {
     private void paintEmpty() {
         var gc = getGraphicsContext2D();
 
-        //TODO: add an effect to unfilled rects to make it look cooler
-
         //Clear
         gc.clearRect(0,0,width,height);
 
-        //Fill
-        gc.setFill(Color.TRANSPARENT);
+        //Fill with slight transparency on black colour
+        gc.setFill(new Color(0.6, 0.6, 0.6, 0.15));
         gc.fillRect(0, 0, width, height);
-
-        //TODO: fix glow effect. its not cleared when peices are cleared leading to it looking like no pieces have been cleared.
 
 
         //glow effect on the rects makes the pieces look shiny
@@ -171,6 +184,21 @@ public class GameBlock extends Canvas {
 
         //Clear
         gc.clearRect(0,0,width,height);
+
+        //create glow on the block
+        Glow glow = new Glow();
+        glow.setLevel(0.7);
+
+        //some lighting stuff. the lighting and glow gives a cartoony effect on the blocks
+        DirectionalLight light = new DirectionalLight();
+        light.setColor(Color.WHITE);
+        light.setTranslateX(150);
+        light.setTranslateY(0);
+        light.setTranslateZ(-200);
+
+        //draw effect
+        gc.applyEffect(glow);
+        gc.applyEffect(light.getEffect());
 
         //Colour fill
         gc.setFill(colour);

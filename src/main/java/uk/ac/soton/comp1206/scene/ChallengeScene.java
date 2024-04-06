@@ -4,22 +4,16 @@ import javafx.animation.Animation;
 import javafx.animation.FillTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -28,15 +22,11 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp1206.component.GameBlock;
 import uk.ac.soton.comp1206.component.GameBoard;
 import uk.ac.soton.comp1206.component.PieceBoard;
-import uk.ac.soton.comp1206.event.BlockClickedListener;
-import uk.ac.soton.comp1206.event.NextPieceListener;
 import uk.ac.soton.comp1206.game.Game;
-import uk.ac.soton.comp1206.game.GamePiece;
+import uk.ac.soton.comp1206.helpers.FileReader;
 import uk.ac.soton.comp1206.helpers.Multimedia;
 import uk.ac.soton.comp1206.ui.GamePane;
 import uk.ac.soton.comp1206.ui.GameWindow;
-
-import java.util.Optional;
 
 /**
  * The Single Player challenge scene. Holds the UI for the single player challenge mode in the game.
@@ -139,10 +129,15 @@ public class ChallengeScene extends BaseScene {
         Label multiplierNum = generateUINumber(game.getMultiplier());
         Label livesNum = generateUINumber(game.getLives());
 
+        //make vbox to put highest score and game info in
+        VBox gameInfoAndHighestScore = new VBox();
+        gameInfoAndHighestScore.setSpacing(-5);
+
         //set spacing and add to the top of the display
         hBox.setSpacing(5);
         hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum ,livesText, livesNum);
-        mainPane.setTop(hBox);
+        gameInfoAndHighestScore.getChildren().addAll(hBox, makeHighestScoreInfo());
+        mainPane.setTop(gameInfoAndHighestScore);
 
 
         //set up timer for animations and etc
@@ -168,6 +163,28 @@ public class ChallengeScene extends BaseScene {
         timer.play();
 
 
+    }
+
+    private HBox makeHighestScoreInfo(){
+        //get the highest score
+
+        int highestFound = 0;
+        String[] scores = FileReader.readScoresAndNamesAsString();
+
+        for(String x : scores){
+            x = x.split(":")[1]; //get the score
+            //if highest found then save it
+            if (highestFound < Integer.parseInt(x)){
+                highestFound = Integer.parseInt(x);
+            }
+        }
+
+        Label uiText = generateUIText("Highest Score : ");
+        Label scoreUINumber = generateUINumber(new SimpleIntegerProperty(highestFound));
+
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(uiText, scoreUINumber);
+        return hBox;
     }
 
     /**

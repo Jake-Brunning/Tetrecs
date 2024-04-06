@@ -14,4 +14,12 @@ public class Launcher {
         App.main(args);
     }
 
+
+    //List of stuff to do:
+    //TODO: Menus screen animations + visual effectS
+    //TODO: BLock updated graphics (make them look cooler)  UH MAYBE??? NEEDS MORE WORK
+    //TODO: Hover effect on blocks(?)                       DONE
+    //TODO: Fade out effect when clearing blocks
+    //TODO: high score to beat on challenge scene           DONE
+    //TODO: multiplayer -> start games and etc
 }
