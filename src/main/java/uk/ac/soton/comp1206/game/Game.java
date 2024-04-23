@@ -49,6 +49,7 @@ public class Game {
 
     /**
      * Create a new game with the specified rows and columns. Creates a corresponding grid model.
+     *
      * @param cols number of columns
      * @param rows number of rows
      */
@@ -57,7 +58,7 @@ public class Game {
         this.rows = rows;
 
         //Create a new grid model to represent the game state
-        this.grid = new Grid(cols,rows);
+        this.grid = new Grid(cols, rows);
     }
 
     /**
@@ -81,6 +82,7 @@ public class Game {
 
     /**
      * Handle what should happen when a particular block is clicked
+     *
      * @param gameBlock the block that was clicked
      */
     public void blockClicked(GameBlock gameBlock) {
@@ -92,20 +94,20 @@ public class Game {
 
 
         //attempt to play the piece
-        if(grid.playPiece(currentPiece, x, y)){
+        if (grid.playPiece(currentPiece, x, y)) {
             Multimedia.playAudioFile(Multimedia.SOUND.PLACE);
             //handle the after-piece shenanigans (clear lines , gen next piece, update timer)
             nextPiece();
             afterPiece();
             callPiecePlacedListener();
-        }
-        else{
+        } else {
             Multimedia.playAudioFile(Multimedia.SOUND.FAIL);
         }
     }
 
     /**
      * Get the grid model inside this game representing the game state of the board
+     *
      * @return game grid model
      */
     public Grid getGrid() {
@@ -114,6 +116,7 @@ public class Game {
 
     /**
      * Get the number of columns in this game
+     *
      * @return number of columns
      */
     public int getCols() {
@@ -122,20 +125,21 @@ public class Game {
 
     /**
      * Get the number of rows in this game
+     *
      * @return number of rows
      */
     public int getRows() {
         return rows;
     }
 
-    private GamePiece spawnPiece(){
+    private GamePiece spawnPiece() {
         Random rng = new Random();
         GamePiece newPiece = GamePiece.createPiece(rng.nextInt(0, GamePiece.PIECES));
         logger.info("Spawned piece : " + newPiece);
         return newPiece;
     }
 
-    private void nextPiece(){
+    private void nextPiece() {
         logger.info("Switching to next piece");
         currentPiece = followingPiece;
         followingPiece = spawnPiece();
@@ -147,12 +151,12 @@ public class Game {
     /**
      * used to replace the current piece with a random piece
      */
-    public void replaceCurrentPiece(){
+    public void replaceCurrentPiece() {
         currentPiece = spawnPiece();
         callPieceUpdatedListener();
     }
 
-    public void swapPieces(){
+    public void swapPieces() {
         logger.info("Switching pieces");
         GamePiece temp = currentPiece;
         currentPiece = followingPiece;
@@ -165,19 +169,19 @@ public class Game {
     /**
      * used by the gamepieces to display the right piece
      */
-    private void callPieceUpdatedListener(){
+    private void callPieceUpdatedListener() {
         nextPieceListener.nextPiece(currentPiece, followingPiece);
     }
 
     /**
      * used by the timer to detect when a piece has been succesfully played
      */
-    private void callPiecePlacedListener(){
+    private void callPiecePlacedListener() {
         piecePlacedListener.detectPiecePlaced();
     }
 
 
-    private void afterPiece(){//check if any horizontal / vertical lines have been cleared
+    private void afterPiece() {//check if any horizontal / vertical lines have been cleared
 
         //(this function can be improved in terms of time but its more readable this way)
 
@@ -187,25 +191,25 @@ public class Game {
         ArrayList<Integer> horizontalsToClear = new ArrayList<Integer>(); //the horizontal lines to clear
         ArrayList<Integer> verticalsToClear = new ArrayList<Integer>(); //the vertical lines to clear
 
-        for(int j = 0; j < grid.getRows(); j++){ //go through the cols (iterates downwards)
-            for(int i = 0; i < grid.getCols(); i++){ //go through the rows (iterates right)
+        for (int j = 0; j < grid.getRows(); j++) { //go through the cols (iterates downwards)
+            for (int i = 0; i < grid.getCols(); i++) { //go through the rows (iterates right)
 
                 //i j get swapped in vertical check. Means for loop will iterate downwards for vertical
                 //and to the right for horizontal.
 
-                if(grid.get(i, j) == 0){ //if space is empty on the horizontal
+                if (grid.get(i, j) == 0) { //if space is empty on the horizontal
                     isHorizontalFull = false;
                 }
 
-                if(grid.get(j, i) == 0){ //if space is empty on the vertical
+                if (grid.get(j, i) == 0) { //if space is empty on the vertical
                     isVerticalFull = false;
                 }
             }
-            if(isHorizontalFull){ //if the line is full mark it for clearing
+            if (isHorizontalFull) { //if the line is full mark it for clearing
                 horizontalsToClear.add(j);
                 logger.info("Detected horizontal : " + j + " should be cleared");
             }
-            if(isVerticalFull){
+            if (isVerticalFull) {
                 verticalsToClear.add(j);
                 logger.info("Detected vertical : " + j + " should be cleared");
             }
@@ -219,8 +223,8 @@ public class Game {
 
         //adjust for overlapping lines
         //if a number is in both verticalToClear and horizontalToClear then they overlap.
-        for (int x: horizontalsToClear) {
-            if(verticalsToClear.contains(x)){
+        for (int x : horizontalsToClear) {
+            if (verticalsToClear.contains(x)) {
                 amountOfBlocksCleared = amountOfBlocksCleared - 1; //overlap, so one less block is cleared than whats expected
             }
         }
@@ -230,22 +234,22 @@ public class Game {
         //clear the lines
         //clear horizontals
         for (Integer row : horizontalsToClear) {
-            for(int i = 0 ; i < grid.getCols(); i++){ //i goes right
+            for (int i = 0; i < grid.getCols(); i++) { //i goes right
                 grid.set(i, row, -1);
                 grid.set(i, row, 0);
             }
         }
 
         //clear verticals
-        for(Integer col : verticalsToClear){
-            for(int j = 0; j < grid.getRows(); j++){ //j goes downwards
+        for (Integer col : verticalsToClear) {
+            for (int j = 0; j < grid.getRows(); j++) { //j goes downwards
                 grid.set(col, j, -1);
                 grid.set(col, j, 0);
             }
         }
     }
 
-    private void calculateAndUpdateScore(int noLines, int noBlocks){ //calculates the new score and sets it to score
+    private void calculateAndUpdateScore(int noLines, int noBlocks) { //calculates the new score and sets it to score
         //formula:
         //score = score + (numberOfLinesCleared * numberOfBlocksCleared * 10 * currentMultiplier)
         score.set(score.get() + (noLines * noBlocks * 10 * multiplier.get()));
@@ -257,43 +261,42 @@ public class Game {
         //set multiplier
         //if a line has been cleared add 1 to the multiplier. If not, set the multiplier back to one.
         //checks if a line has been cleared so can also add the sound here
-        if(noLines != 0){
+        if (noLines != 0) {
             multiplier.set(multiplier.get() + 1);
             Multimedia.playAudioFile(Multimedia.SOUND.CLEAR);
-        }
-        else{
+        } else {
             multiplier.set(1);
         }
     }
 
-    public void setNextPieceListener(NextPieceListener nextPieceListener){
+    public void setNextPieceListener(NextPieceListener nextPieceListener) {
         this.nextPieceListener = nextPieceListener;
     }
 
-    public void setPiecePlacedListener(PiecePlacedListener piecePlacedListener){
+    public void setPiecePlacedListener(PiecePlacedListener piecePlacedListener) {
         this.piecePlacedListener = piecePlacedListener;
     }
 
-    public void rotateCurrentPiece(int noRotations){
+    public void rotateCurrentPiece(int noRotations) {
         currentPiece.rotate(noRotations);
         callPieceUpdatedListener();
         Multimedia.playAudioFile(Multimedia.SOUND.ROTATE);
     }
 
     //gets for score, lives, level and multiplier
-    public SimpleIntegerProperty getScore(){
+    public SimpleIntegerProperty getScore() {
         return score;
     }
 
-    public SimpleIntegerProperty getLives(){
+    public SimpleIntegerProperty getLives() {
         return lives;
     }
 
-    public SimpleIntegerProperty getLevel(){
+    public SimpleIntegerProperty getLevel() {
         return level;
     }
 
-    public SimpleIntegerProperty getMultiplier(){
+    public SimpleIntegerProperty getMultiplier() {
         return multiplier;
     }
 }

@@ -8,12 +8,14 @@ import java.io.File;
  * Contains static functions for returning images from image file.
  */
 public class getImage {
-    public static enum  IMAGE{ECSGAMES, INSTRUCTIONS, TETRECS, BACKGROUND1};
+    public static enum IMAGE {ECSGAMES, INSTRUCTIONS, TETRECS, BACKGROUND1}
 
-    public static Image getImage(IMAGE image){
+    ;
+
+    public static Image getImage(IMAGE image) {
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "images" + File.separator;
 
-        switch (image){
+        switch (image) {
             case ECSGAMES -> relativePath = relativePath + "ECSGames.png";
             case INSTRUCTIONS -> relativePath = relativePath + "Instructions.png";
             case TETRECS -> relativePath = relativePath + "TetrECS.png";

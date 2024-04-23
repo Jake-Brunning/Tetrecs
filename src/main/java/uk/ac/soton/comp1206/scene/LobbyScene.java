@@ -123,6 +123,9 @@ public class LobbyScene extends BaseScene {
         //add listener
         com.addListener(this::handleResponse);
 
+        //Do inital lobby check
+        com.send("LIST");
+
         //start timer
         checkTimer = setUpTimer();
         checkTimer.setCycleCount(Animation.INDEFINITE); //have the timer loop forever
@@ -132,11 +135,12 @@ public class LobbyScene extends BaseScene {
 
     /**
      * set up the lobby chat
+     *
      * @return the scrollpane containg the chat
      */
-    private ScrollPane chatbox(){
+    private ScrollPane chatbox() {
         //set up scroll pane which contains text
-        ScrollPane scrollPane= new ScrollPane();
+        ScrollPane scrollPane = new ScrollPane();
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         scrollPane.setPrefWidth(300);
         scrollPane.setPrefHeight(gameWindow.getHeight() - 50);
@@ -152,10 +156,11 @@ public class LobbyScene extends BaseScene {
 
     /**
      * set up the timer for handling getting channels
+     *
      * @return the timer
      */
-    private Timeline setUpTimer(){
-        return new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
+    private Timeline setUpTimer() {
+        return new Timeline(new KeyFrame(Duration.millis(2000), new EventHandler<ActionEvent>() {
             //what to do every frame (so 500 ms in this case)
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -168,54 +173,53 @@ public class LobbyScene extends BaseScene {
 
     /**
      * handles all possible responses from the server
+     *
      * @param response the string response from the server
      */
-    private void handleResponse(String response){
+    private void handleResponse(String response) {
         //Platform... to avoid funkiness with threads
-        if(response.startsWith("CHANNELS")){
-            Platform.runLater(() ->{
+        if (response.startsWith("CHANNELS")) {
+            Platform.runLater(() -> {
                 handleChannelResponse(response);
             });
-        }
-        else if(response.startsWith("JOIN")){
+        } else if (response.startsWith("JOIN")) {
             //handle joining the channel
-            Platform.runLater(() ->{
+            Platform.runLater(() -> {
                 handleJoiningAChannel(response);
                 makeNameText("NAMES: ");
             });
-        }
-        else if(response.startsWith("ERROR")){
+        } else if (response.startsWith("ERROR")) {
             logger.info(response);
-        }
-        else if(response.startsWith("NICK")){
-            Platform.runLater(() ->{
+        } else if (response.startsWith("NICK")) {
+            Platform.runLater(() -> {
                 handleNick(response);
             });
         } else if (response.startsWith("MSG")) {
-            Platform.runLater(() ->{
+            Platform.runLater(() -> {
                 handleIncomingMessage(response);
             });
-        } else if (response.startsWith("USERS")){
+        } else if (response.startsWith("USERS")) {
             Platform.runLater(() -> {
                 handleIncomingUsers(response);
             });
         }
     }
 
-    private void handleIncomingUsers(String response){
+    private void handleIncomingUsers(String response) {
         response = response.replace("USERS ", "");
 
         String[] names = response.split("\n");
-        for(String x : names){
+        for (String x : names) {
             makeNameText(x);
         }
     }
 
     /**
      * add incoming message to the chat box
+     *
      * @param response the message
      */
-    private void handleIncomingMessage(String response){
+    private void handleIncomingMessage(String response) {
         //remove msg header
         response = response.replace("MSG ", "");
         response += "\n";
@@ -228,27 +232,27 @@ public class LobbyScene extends BaseScene {
         myTextFlow.getChildren().add(text);
     }
 
-    private void handleNick(String response){
+    private void handleNick(String response) {
         name = response.replace("NICK ", "");
         this.name = name;
     }
 
-    private void handleJoiningAChannel(String response){
+    private void handleJoiningAChannel(String response) {
         response = response.replace("JOIN ", "");
         currentChannel = response;
 
     }
 
-    private void handleChannelResponse(String response){
-        response = response.replace("CHANNELS " , "");
+    private void handleChannelResponse(String response) {
+        response = response.replace("CHANNELS ", "");
         String[] channels = response.split("\n");
         addChanelsToScreen(channels);
     }
 
-    private void addChanelsToScreen(String[] channelNames){
+    private void addChanelsToScreen(String[] channelNames) {
         ArrayList<Button> channelButtons = new ArrayList<>();
 
-        for(int i = 0; i < channelNames.length; i++){
+        for (int i = 0; i < channelNames.length; i++) {
             //create a button
             channelButtons.add(makeChannelButton(channelNames[i]));
         }
@@ -258,7 +262,7 @@ public class LobbyScene extends BaseScene {
         channelDisplay.getChildren().addAll(channelButtons);
     }
 
-    private Button makeChannelButton(String channelName){
+    private Button makeChannelButton(String channelName) {
         //set up button ui
         Button button = new Button();
         button.setText(channelName);
@@ -270,14 +274,14 @@ public class LobbyScene extends BaseScene {
 
         //set up button action
         //when button is clicked send a request to join its corresponding channel
-        button.setOnMouseClicked(e ->{
+        button.setOnMouseClicked(e -> {
             com.send("JOIN " + channelName);
         });
 
         return button;
     }
 
-    private Label makeChannelTitle(){
+    private Label makeChannelTitle() {
         Label label = new Label("CHANNELS");
         label.setFont(new Font("Impact", 40));
         label.setTextFill(Color.GREY);
@@ -294,7 +298,7 @@ public class LobbyScene extends BaseScene {
         return label;
     }
 
-    private void makeNameText(String name){
+    private void makeNameText(String name) {
         Label text = new Label();
         text.setText(name);
         text.setFont(new Font("Arial Bold", 15));
@@ -303,7 +307,7 @@ public class LobbyScene extends BaseScene {
         namesDisplay.getChildren().addAll(text);
     }
 
-    private HBox setUpCreateChannel(){
+    private HBox setUpCreateChannel() {
         HBox hbox = new HBox();
 
         //add a textfield and a submit button
@@ -320,7 +324,7 @@ public class LobbyScene extends BaseScene {
         textField.setFont(new Font("Arial", 20));
 
         //send request to the server to create channel
-        button.setOnMouseClicked(e ->{
+        button.setOnMouseClicked(e -> {
             com.send("CREATE " + textField.getText());
         });
 
@@ -329,7 +333,7 @@ public class LobbyScene extends BaseScene {
         return hbox;
     }
 
-    private HBox setUpSendMessage(){
+    private HBox setUpSendMessage() {
         HBox hbox = new HBox();
 
         //add a textfield and a submit button
@@ -346,7 +350,7 @@ public class LobbyScene extends BaseScene {
         textField.setFont(new Font("Arial", 20));
 
         //send message to the server
-        button.setOnMouseClicked(e ->{
+        button.setOnMouseClicked(e -> {
             com.send("MSG " + textField.getText());
         });
 
@@ -357,13 +361,14 @@ public class LobbyScene extends BaseScene {
 
     /**
      * create the name display
+     *
      * @return the vbox containing all nicknames
      */
 
-    private void intiliseKeyboardInputs(){//intilise the events for the keyboard inputs
+    private void intiliseKeyboardInputs() {//intilise the events for the keyboard inputs
         //here, so you can get back to the menu
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
-            if(key.getCode() == KeyCode.ESCAPE){
+            if (key.getCode() == KeyCode.ESCAPE) {
                 logger.info("Escape key press detected");
                 gameWindow.cleanup();
                 checkTimer.stop();

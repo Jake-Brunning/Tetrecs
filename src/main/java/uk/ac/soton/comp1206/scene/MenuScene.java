@@ -38,6 +38,7 @@ public class MenuScene extends BaseScene {
 
     /**
      * Create a new menu scene
+     *
      * @param gameWindow the Game Window this will be displayed in
      */
     public MenuScene(GameWindow gameWindow) {
@@ -55,7 +56,7 @@ public class MenuScene extends BaseScene {
 
         logger.info("Building " + this.getClass().getName());
 
-        root = new GamePane(gameWindow.getWidth(),gameWindow.getHeight());
+        root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
 
         var menuPane = new StackPane();
         menuPane.setMaxWidth(gameWindow.getWidth());
@@ -92,21 +93,21 @@ public class MenuScene extends BaseScene {
         Button multButton = constructMenuButtons("Multiplayer");
 
         //add the event the display an instruction scene
-        instrButton.setOnMouseClicked(e-> {
+        instrButton.setOnMouseClicked(e -> {
             gameWindow.startInstructions();
         });
 
         //add the event to display multiplayer scene
         multButton.setOnMouseClicked(e -> {
-                gameWindow.startLobbyScene();
+            gameWindow.startLobbyScene();
         });
 
         //make button to display exit game
         Button exitButton = constructMenuButtons("Exit Game");
-        exitButton.setOnMouseClicked(e-> { //add button functionality so it exits the game
+        exitButton.setOnMouseClicked(e -> { //add button functionality so it exits the game
             logger.info("Exiting game");
             System.exit(0);
-                });
+        });
 
         //add dev logo
         ImageView ecsGames = new ImageView(getImage.getImage(getImage.IMAGE.ECSGAMES));
@@ -131,13 +132,12 @@ public class MenuScene extends BaseScene {
         //calculation to display the vbox (the buttons in the menu screen) perfectly in the center.
         //in order to do this we need the vbox width. This is calculated asynchrounsly, so need to use platform.runlater
         //to wait until the vbox width is actually calculated.
-        Platform.runLater(() ->{
+        Platform.runLater(() -> {
             //(menu screen width) - (logo width) - (vbox width / 2) = space needed to align buttons in the center
             //vbox width is divided by 2 as half of the vbox is on the 'left' on the screen and other half on the right
             //if it wasnt divided by 2 then the buttons would start on the exact centre, being displayed on the right.
             devLogoAndButtons.setSpacing(((double) gameWindow.getWidth() / 2) - ecsGames.getFitWidth() - vbox.prefWidth(-1) / 2);
         });
-
 
 
         mainPane.setBottom(devLogoAndButtons);
@@ -151,7 +151,7 @@ public class MenuScene extends BaseScene {
 
     }
 
-    private Button constructMenuButtons(String s){ //returns a button which can then have an event listener added to it
+    private Button constructMenuButtons(String s) { //returns a button which can then have an event listener added to it
         Button button = new Button();
         button.setBackground(null); //make the background transparent
         button.setFont(new Font("Orbitron", 30)); //set font
@@ -170,17 +170,18 @@ public class MenuScene extends BaseScene {
 
         //set effect for mouse hovering over the button
         button.setOnMouseEntered(e -> button.setTextFill(Color.GREY));
-        button.setOnMouseExited(e-> button.setTextFill(Color.WHITESMOKE));
+        button.setOnMouseExited(e -> button.setTextFill(Color.WHITESMOKE));
 
         return button;
     }
 
     /**
      * gives a node a rotate transition effect, so it appears to swing left and right
+     *
      * @param node the node to apply the transition to
      */
 
-    private void applyRotateTransition(Node node){
+    private void applyRotateTransition(Node node) {
         RotateTransition rotateTransition = new RotateTransition(Duration.millis(3000), node);
         rotateTransition.setByAngle(50); //rotate to this angle
         rotateTransition.setFromAngle(-25); //rotate from this angle
@@ -200,6 +201,7 @@ public class MenuScene extends BaseScene {
 
     /**
      * Handle when the Start Game button is pressed
+     *
      * @param event event
      */
     private void startGame(ActionEvent event) {

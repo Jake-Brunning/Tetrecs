@@ -24,21 +24,23 @@ import java.util.ArrayList;
 
 import static uk.ac.soton.comp1206.helpers.getImage.getImage;
 
-public class InstructionsScene extends BaseScene{
+public class InstructionsScene extends BaseScene {
     private static final Logger logger = LogManager.getLogger(InstructionsScene.class);
-    public InstructionsScene(GameWindow gameWindow){
+
+    public InstructionsScene(GameWindow gameWindow) {
         super(gameWindow);
         logger.info("Creating Instructions Scene");
     }
+
     @Override
     public void initialise() {
         intiliseKeyboardInputs();
     }
 
-    private void intiliseKeyboardInputs(){//intilise the events for the keyboard inputs
+    private void intiliseKeyboardInputs() {//intilise the events for the keyboard inputs
         //here so you can get back to the menu
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
-            if(key.getCode() == KeyCode.ESCAPE){
+            if (key.getCode() == KeyCode.ESCAPE) {
                 logger.info("Escape key press detected");
                 gameWindow.cleanup();
                 gameWindow.startMenu();
@@ -81,7 +83,6 @@ public class InstructionsScene extends BaseScene{
         root.getChildren().add(vboxInstrAndPieces);
 
 
-
         //add dynamically genereated blocks
         ArrayList<PieceBoard> pieceBoards = new ArrayList<>();
         final int pieceBoardWidth = 75; //width of pieceboards
@@ -101,14 +102,14 @@ public class InstructionsScene extends BaseScene{
         //create and add pieceboards
         int vboxPointer = 0; //used to see what vbox we are currently adding to
         int currentHieghtOfPieceboards = 0; //the current height of the pieceboards in this vbox
-        for(int i = 0; i < GamePiece.PIECES; i++){
+        for (int i = 0; i < GamePiece.PIECES; i++) {
             //create and display piece
             PieceBoard pieceBoard = new PieceBoard(pieceBoardWidth, pieceBoardHeight);
             pieceBoard.setPieceToDisplay(GamePiece.createPiece(i));
 
             //check if pieceboard is going to be offscreen.
             double test = vBoxes.get(vboxPointer).getHeight();
-            if(currentHieghtOfPieceboards + pieceBoardHeight > vBoxes.get(vboxPointer).getMaxHeight()){
+            if (currentHieghtOfPieceboards + pieceBoardHeight > vBoxes.get(vboxPointer).getMaxHeight()) {
                 //add to hbox and create new vbox;
                 hbox.getChildren().add(vBoxes.get(vboxPointer));
                 vboxPointer++;
@@ -127,7 +128,7 @@ public class InstructionsScene extends BaseScene{
 
     }
 
-    private VBox createPieceBoardVbox(){
+    private VBox createPieceBoardVbox() {
         VBox vBox = new VBox();
         vBox.setSpacing(20);
         vBox.setMaxHeight(225);

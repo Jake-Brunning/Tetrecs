@@ -47,6 +47,7 @@ public class ChallengeScene extends BaseScene {
 
     /**
      * Create a new Single Player challenge scene
+     *
      * @param gameWindow the Game Window
      */
     public ChallengeScene(GameWindow gameWindow) {
@@ -63,7 +64,7 @@ public class ChallengeScene extends BaseScene {
 
         setupGame();
 
-        root = new GamePane(gameWindow.getWidth(),gameWindow.getHeight());
+        root = new GamePane(gameWindow.getWidth(), gameWindow.getHeight());
 
         var challengePane = new StackPane();
         challengePane.setMaxWidth(gameWindow.getWidth());
@@ -74,7 +75,7 @@ public class ChallengeScene extends BaseScene {
         var mainPane = new BorderPane();
         challengePane.getChildren().add(mainPane);
 
-        board = new GameBoard(game.getGrid(), (double) gameWindow.getWidth() /2, (double) gameWindow.getWidth() /2);
+        board = new GameBoard(game.getGrid(), (double) gameWindow.getWidth() / 2, (double) gameWindow.getWidth() / 2);
         mainPane.setCenter(board);
 
         //vbox for piece displays
@@ -97,7 +98,7 @@ public class ChallengeScene extends BaseScene {
         });
 
         //on right click or click on current piece rotate the current piece
-        board.setOnRightClick((() ->{
+        board.setOnRightClick((() -> {
             game.rotateCurrentPiece(1);
         }));
 
@@ -106,7 +107,7 @@ public class ChallengeScene extends BaseScene {
         });
 
         //also works on left click (as spec intends)
-        displayFollowingPiece.setOnRightClick(()->{
+        displayFollowingPiece.setOnRightClick(() -> {
             game.swapPieces();
         });
 
@@ -135,7 +136,7 @@ public class ChallengeScene extends BaseScene {
 
         //set spacing and add to the top of the display
         hBox.setSpacing(5);
-        hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum ,livesText, livesNum);
+        hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum, livesText, livesNum);
         gameInfoAndHighestScore.getChildren().addAll(hBox, makeHighestScoreInfo());
         mainPane.setTop(gameInfoAndHighestScore);
 
@@ -165,16 +166,16 @@ public class ChallengeScene extends BaseScene {
 
     }
 
-    private HBox makeHighestScoreInfo(){
+    private HBox makeHighestScoreInfo() {
         //get the highest score
 
         int highestFound = 0;
         String[] scores = FileReader.readScoresAndNamesAsString();
 
-        for(String x : scores){
+        for (String x : scores) {
             x = x.split(":")[1]; //get the score
             //if highest found then save it
-            if (highestFound < Integer.parseInt(x)){
+            if (highestFound < Integer.parseInt(x)) {
                 highestFound = Integer.parseInt(x);
             }
         }
@@ -189,9 +190,10 @@ public class ChallengeScene extends BaseScene {
 
     /**
      * sets up the death bar at the bottom of the screen. FYI deathbar is an attribute of challengescene
+     *
      * @return a rectangle for the deathbar
      */
-    private void setUpDeathBar(){
+    private void setUpDeathBar() {
         deathBar = new Rectangle();
         deathBar.setWidth(gameWindow.getWidth());
         deathBar.setHeight(20);
@@ -201,7 +203,7 @@ public class ChallengeScene extends BaseScene {
         deathBar.setY(10);
     }
 
-    private void resetWindowAnimations(){
+    private void resetWindowAnimations() {
         resetTimer();
         resetDeathBar(noOfFramesUntilDeath);
     }
@@ -209,9 +211,10 @@ public class ChallengeScene extends BaseScene {
     /**
      * sets up the timeline to use for the challenge scene. Cannot extend keyframe so needs to be defined here
      * (A lot of the game logic to do with losing lives is in this function)
+     *
      * @return returns the timeline.
      */
-    private Timeline setUpTimer(){
+    private Timeline setUpTimer() {
         final int delayBetweenFrames = 10;
 
         return new Timeline(new KeyFrame(Duration.millis(delayBetweenFrames), new EventHandler<ActionEvent>() {
@@ -230,7 +233,7 @@ public class ChallengeScene extends BaseScene {
                 //recalculated each frame in case level increases
                 //formula as spec : 12000 - (500 * currentLevel) : min value 2500. Divide by delay between frames to convert to frames
                 noOfFramesUntilDeath = (12000 - (500 * game.getLevel().get())) / delayBetweenFrames;
-                if(noOfFramesUntilDeath < 250){
+                if (noOfFramesUntilDeath < 250) {
                     noOfFramesUntilDeath = 250;
                 }
 
@@ -238,14 +241,14 @@ public class ChallengeScene extends BaseScene {
                 adjustDeathBar(noOfFrames, noOfFramesUntilDeath);
 
                 //check if your dead
-                if(noOfFrames == noOfFramesUntilDeath){
+                if (noOfFrames == noOfFramesUntilDeath) {
                     logger.info("detected that life should be lost");
                     //decrease lives by one
                     game.getLives().set(game.getLives().get() - 1);
 
                     //if no lives are left die
                     //check if lives is  zero
-                    if(game.getLives().get() == 0){
+                    if (game.getLives().get() == 0) {
                         logger.info("lost");
                         Multimedia.playAudioFile(Multimedia.SOUND.EXPLODE);
                         gameWindow.cleanup();
@@ -264,11 +267,10 @@ public class ChallengeScene extends BaseScene {
     }
 
     /**
-     *
      * @param currentFrame the amount of frames elapsed in the animation
-     * @param totalFrames the amount of frames for the bar goes to 0
+     * @param totalFrames  the amount of frames for the bar goes to 0
      */
-    private void adjustDeathBar(int currentFrame, int totalFrames){
+    private void adjustDeathBar(int currentFrame, int totalFrames) {
         //get the percent of the bar which should be full
         double howFar = (double) currentFrame / (double) totalFrames;
 
@@ -276,7 +278,7 @@ public class ChallengeScene extends BaseScene {
         deathBar.setWidth(gameWindow.getWidth() - (howFar * (double) gameWindow.getWidth()));
     }
 
-    private void resetDeathBar(int totalFrames){
+    private void resetDeathBar(int totalFrames) {
         //reset the width
         deathBar.setWidth(gameWindow.getWidth());
 
@@ -285,35 +287,32 @@ public class ChallengeScene extends BaseScene {
         fillTransition.playFromStart();
     }
 
-    private void resetTimer(){
+    private void resetTimer() {
         noOfFrames = 0;
     }
 
-    private void intiliseKeyboardInputs(){//intilise the events for the keyboard inputs
+    private void intiliseKeyboardInputs() {//intilise the events for the keyboard inputs
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             //long if statement on handling each key press
-            if(key.getCode() == KeyCode.R || key.getCode() == KeyCode.SPACE){
+            if (key.getCode() == KeyCode.R || key.getCode() == KeyCode.SPACE) {
                 logger.info("R or space press detected");
                 game.swapPieces();
-            }
-            else if(key.getCode() == KeyCode.Q || key.getCode() == KeyCode.Z || key.getCode() == KeyCode.OPEN_BRACKET){
+            } else if (key.getCode() == KeyCode.Q || key.getCode() == KeyCode.Z || key.getCode() == KeyCode.OPEN_BRACKET) {
                 //left rotation
                 logger.info("Q or Z or [ press detected");
                 game.rotateCurrentPiece(3);
-            }
-            else if (key.getCode() == KeyCode.E || key.getCode() == KeyCode.C || key.getCode() == KeyCode.CLOSE_BRACKET){
+            } else if (key.getCode() == KeyCode.E || key.getCode() == KeyCode.C || key.getCode() == KeyCode.CLOSE_BRACKET) {
                 //right rotation
                 logger.info("E or C or ] press detected");
                 game.rotateCurrentPiece(1);
-            }
-            else if(key.getCode() == KeyCode.ESCAPE){
+            } else if (key.getCode() == KeyCode.ESCAPE) {
                 logger.info("Escape key press detected");
                 gameWindow.cleanup();
                 //gameWindow.loadScene(new MenuScene(gameWindow));
                 gameWindow.startMenu();
             }
             //moving position on the grid
-            else if(key.getCode() == KeyCode.W || key.getCode() == KeyCode.UP){
+            else if (key.getCode() == KeyCode.W || key.getCode() == KeyCode.UP) {
                 logger.info("W | UP key press detected");
                 board.getBlock(x, y).paint();
                 y--;
@@ -339,18 +338,18 @@ public class ChallengeScene extends BaseScene {
         });
     }
 
-    private void keepXandYinGrid(){
-        if(x < 0){
+    private void keepXandYinGrid() {
+        if (x < 0) {
             x = 0;
         }
-        if(x > game.getCols() - 1){
+        if (x > game.getCols() - 1) {
             x = game.getCols() - 1;
         }
 
-        if(y < 0){
+        if (y < 0) {
             y = 0;
         }
-        if(y > game.getRows() - 1){
+        if (y > game.getRows() - 1) {
             y = game.getRows() - 1;
         }
 
@@ -358,7 +357,7 @@ public class ChallengeScene extends BaseScene {
         board.getBlock(x, y).drawCircle();
     }
 
-    private Label generateUIText(String s){ //returns a label with the specified string in a cool font
+    private Label generateUIText(String s) { //returns a label with the specified string in a cool font
         Label label = new Label(s);
         label.setTextFill(Color.YELLOW);
 
@@ -379,7 +378,7 @@ public class ChallengeScene extends BaseScene {
         return label;
     }
 
-    private Label generateUINumber(SimpleIntegerProperty toBind){ //returns a label which can be binded to a number to display it
+    private Label generateUINumber(SimpleIntegerProperty toBind) { //returns a label which can be binded to a number to display it
         Label label = generateUIText("");
         label.setTextFill(Color.WHITE); //set colour
         label.textProperty().bind(toBind.asString());
@@ -388,6 +387,7 @@ public class ChallengeScene extends BaseScene {
 
     /**
      * Handle when a block is clicked
+     *
      * @param gameBlock the Game Block that was clocked
      */
     private void blockClicked(GameBlock gameBlock) {
@@ -416,7 +416,6 @@ public class ChallengeScene extends BaseScene {
         intiliseKeyboardInputs();
         game.start();
     }
-
 
 
 }

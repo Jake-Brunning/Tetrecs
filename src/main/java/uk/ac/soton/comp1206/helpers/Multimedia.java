@@ -18,15 +18,15 @@ public class Multimedia {
     private static final Logger logger = LogManager.getLogger(Multimedia.class);
 
     //enums help with magic boxing this class (making it so no other class needs to know how it works)
-    public static enum SOUND{CLEAR, EXPLODE, FAIL, INTRO, LEVEL, LIFEGAIN, LIFELOSE, PLACE, PLING, ROTATE, TRANSITION}
-    public static enum MUSIC{END, GAME, GAME_START, MENU}
+    public static enum SOUND {CLEAR, EXPLODE, FAIL, INTRO, LEVEL, LIFEGAIN, LIFELOSE, PLACE, PLING, ROTATE, TRANSITION}
+
+    public static enum MUSIC {END, GAME, GAME_START, MENU}
 
 
     /**
-     *
      * @param filePath : the filepath of the sound to play
      */
-    private static void playAudioFile(String filePath){ //plays a specified audio file once
+    private static void playAudioFile(String filePath) { //plays a specified audio file once
         //Media only accepts uri strings. This converts our path to a uri string.
         File file = new File(filePath);
         String uriString = file.toURI().toString();
@@ -36,24 +36,23 @@ public class Multimedia {
     }
 
     /**
-     *
      * @param sound : the sound to play as an enum. It's converted to a filepath of that sound
      */
-    public static void playAudioFile(SOUND sound){
+    public static void playAudioFile(SOUND sound) {
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sounds" + File.separator;
 
-        switch (sound){
+        switch (sound) {
             case CLEAR -> relativePath = relativePath + "clear.wav";
-            case FAIL ->  relativePath =relativePath + "fail.wav";
-            case INTRO ->  relativePath =relativePath + "intro.mp3";
-            case LEVEL ->  relativePath =relativePath + "level.wav";
-            case PLACE ->  relativePath =relativePath + "place.wav";
-            case PLING ->  relativePath =relativePath + "pling.wav";
-            case ROTATE -> relativePath =relativePath + "rotate.wav";
-            case EXPLODE -> relativePath =relativePath + "explode.wav";
-            case LIFEGAIN ->  relativePath =relativePath + "lifegain.wav";
-            case LIFELOSE ->  relativePath =relativePath + "lifelose.wav";
-            case TRANSITION ->  relativePath =relativePath + "transition.wav";
+            case FAIL -> relativePath = relativePath + "fail.wav";
+            case INTRO -> relativePath = relativePath + "intro.mp3";
+            case LEVEL -> relativePath = relativePath + "level.wav";
+            case PLACE -> relativePath = relativePath + "place.wav";
+            case PLING -> relativePath = relativePath + "pling.wav";
+            case ROTATE -> relativePath = relativePath + "rotate.wav";
+            case EXPLODE -> relativePath = relativePath + "explode.wav";
+            case LIFEGAIN -> relativePath = relativePath + "lifegain.wav";
+            case LIFELOSE -> relativePath = relativePath + "lifelose.wav";
+            case TRANSITION -> relativePath = relativePath + "transition.wav";
         }
 
         playAudioFile(relativePath);
@@ -61,10 +60,9 @@ public class Multimedia {
     }
 
     /**
-     *
      * @param filePath the filepath of the music to play
      */
-    private static void playBackgroundMusic(String filePath){ //loop a specified audiofile
+    private static void playBackgroundMusic(String filePath) { //loop a specified audiofile
 
         //Media only accepts uri strings. This converts our path to a uri string.
         File file = new File(filePath);
@@ -77,18 +75,17 @@ public class Multimedia {
     }
 
     /**
-     *
      * @param music the music to play on loop as an enum. its converted to a filepath.
      */
-    public static void playBackgroundMusic(MUSIC music){//loop a specifed audioFile based on enum
+    public static void playBackgroundMusic(MUSIC music) {//loop a specifed audioFile based on enum
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "music" + File.separator;
 
         //stop the current track from playing if there is one
-        if(backgroundMusicPlayer != null){
+        if (backgroundMusicPlayer != null) {
             backgroundMusicPlayer.stop();
         }
 
-        switch(music){
+        switch (music) {
             case END -> relativePath = relativePath + "end.wav";
             case GAME -> relativePath = relativePath + "game.wav";
             case MENU -> relativePath = relativePath + "menu.mp3";
@@ -96,7 +93,7 @@ public class Multimedia {
         }
 
         //Media only accepts uri strings. This converts our path to a uri string.
-       playBackgroundMusic(relativePath);
+        playBackgroundMusic(relativePath);
         logger.info("Played : " + music);
     }
 }

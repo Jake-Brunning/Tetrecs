@@ -8,6 +8,7 @@ public class Launcher {
 
     /**
      * Launch the JavaFX Application, passing through the commandline arguments
+     *
      * @param args commandline arguments
      */
     public static void main(String[] args) {
@@ -17,7 +18,7 @@ public class Launcher {
 
     //List of stuff to do:
     //TODO: Menus screen animations + visual effectS    MENU SCREEN ANIMATION DONE, CHECK VIS EFFECTS
-    //TODO: BLock updated graphics (make them look cooler)  UH MAYBE??? NEEDS MORE WORK
+    //TODO: BLock updated graphics (make them look cooler)  DONE
     //TODO: Hover effect on blocks(?)                       DONE
     //TODO: Fade out effect when clearing blocks            FAILED
     //TODO: high score to beat on challenge scene           DONE

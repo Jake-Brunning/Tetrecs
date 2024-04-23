@@ -22,20 +22,21 @@ import uk.ac.soton.comp1206.game.Grid;
 public class PieceBoard extends GameBoard {
     private static final Logger logger = LogManager.getLogger(PieceBoard.class);
 
-    public PieceBoard(int width, int height){
+    public PieceBoard(int width, int height) {
         //piece board values
         super(3, 3, width, height);
     }
 
     /**
      * Displays the piece onto the pieceboard
+     *
      * @param gamePiece the piece to display
      */
-    public void setPieceToDisplay(GamePiece gamePiece){
+    public void setPieceToDisplay(GamePiece gamePiece) {
         int[][] blocks = gamePiece.getBlocks();
-        for(int j  = 0; j < this.rows; j++){
-            for(int i = 0; i < this.cols; i++){
-                grid.set(i, j , blocks[i][j]);
+        for (int j = 0; j < this.rows; j++) {
+            for (int i = 0; i < this.cols; i++) {
+                grid.set(i, j, blocks[i][j]);
             }
         }
     }
@@ -43,8 +44,8 @@ public class PieceBoard extends GameBoard {
     /**
      * draw a circle to display where to click the piece
      */
-    public void drawCircle(){
-        getBlock(1,1).drawCircle();
+    public void drawCircle() {
+        getBlock(1, 1).drawCircle();
     }
 
 }

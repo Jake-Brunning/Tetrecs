@@ -30,7 +30,7 @@ import java.util.Comparator;
 
 import static uk.ac.soton.comp1206.helpers.getImage.getImage;
 
-public class ScoreScene extends BaseScene{
+public class ScoreScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(ScoreScene.class);
     private Game game; //the final gamestate
@@ -38,7 +38,7 @@ public class ScoreScene extends BaseScene{
     private VBox onlineScoresVbox;
     private Communicator com;
 
-    public ScoreScene(GameWindow gameWindow, Game game){
+    public ScoreScene(GameWindow gameWindow, Game game) {
         super(gameWindow);
         this.game = game;
         com = gameWindow.getCommunicator();
@@ -90,7 +90,7 @@ public class ScoreScene extends BaseScene{
         //add borderpane
         root.getChildren().add(borderPane);
 
-        submitButton.setOnAction(e ->{
+        submitButton.setOnAction(e -> {
             //on click submit the users score to the score file. : break text file setup so replace with dash
             FileReader.writeToScoresFile(namegetter.getText().replace(":", "-") + ":" + game.getScore().get());
             //make button and namefield disappear
@@ -115,9 +115,10 @@ public class ScoreScene extends BaseScene{
 
     /**
      * gets all scores saved and creates a vbox displaying the 10 highest scores.
+     *
      * @return the vbox containing labels for the 10 highest scores
      */
-    private VBox createScoresDisplay(ArrayList<Pair<String, Integer>> scores){
+    private VBox createScoresDisplay(ArrayList<Pair<String, Integer>> scores) {
         //sort the array list so scores appear in order
         scores.sort(Comparator.comparing(x -> -x.getValue()));
 
@@ -127,11 +128,11 @@ public class ScoreScene extends BaseScene{
         scoresVBox.setMaxHeight(gameWindow.getHeight());
         scoresVBox.setPadding(new Insets(50, 0, 0, 50)); //set padding so it doesn't hug the border
 
-        for(int i = 0; i < scores.size(); i++){
+        for (int i = 0; i < scores.size(); i++) {
             //add the new label.
             scoresVBox.getChildren().add(createLabel(scores.get(i).getKey() + ": " + scores.get(i).getValue().toString(), i));
             //only want to display 10 highest scores. If there's more than 10 scores in the file, break.
-            if(i == 9){
+            if (i == 9) {
                 break;
             }
         }
@@ -141,10 +142,11 @@ public class ScoreScene extends BaseScene{
 
     /**
      * create the label for the name
-     * @param name the string to display
+     *
+     * @param name   the string to display
      * @param colour the colour to display. Uses the list of colours in GameBlock to select a colour based on the number
      */
-    public Label createLabel(String name, int colour){
+    public Label createLabel(String name, int colour) {
         Label label = new Label(name); //to return
         label.setTextFill(GameBlock.COLOURS[colour + 1]); //set colour. colour 0 is transparent so add 1
         label.setFont(new Font("Arial", 25)); //set font
@@ -162,10 +164,11 @@ public class ScoreScene extends BaseScene{
 
     /**
      * convert an array from scores.txt to an arraylist of pairs
+     *
      * @param scoresAndNames the arraylist to convert
      * @return an arraylist of pairs
      */
-    private ArrayList<Pair<String, Integer>> extractScoresAndNamesAsPair(String[] scoresAndNames){
+    private ArrayList<Pair<String, Integer>> extractScoresAndNamesAsPair(String[] scoresAndNames) {
         ArrayList<Pair<String, Integer>> toReturn = new ArrayList<>();
 
         for (String line : scoresAndNames) {
@@ -178,10 +181,10 @@ public class ScoreScene extends BaseScene{
         return toReturn;
     }
 
-    private void intiliseKeyboardInputs(){//intilise the events for the keyboard inputs
+    private void intiliseKeyboardInputs() {//intilise the events for the keyboard inputs
         //here, so you can get back to the menu
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
-            if(key.getCode() == KeyCode.ESCAPE){
+            if (key.getCode() == KeyCode.ESCAPE) {
                 logger.info("Escape key press detected");
                 gameWindow.cleanup();
                 gameWindow.startMenu();
@@ -192,7 +195,7 @@ public class ScoreScene extends BaseScene{
     /**
      * request online scores
      */
-    private void loadOnlineScores(){
+    private void loadOnlineScores() {
         com.addListener(this::recieveOnlineScores);
         com.send("HISCORES");
     }
@@ -201,10 +204,10 @@ public class ScoreScene extends BaseScene{
     /**
      * handle online scores
      */
-    private void recieveOnlineScores(String response){
+    private void recieveOnlineScores(String response) {
         //remove the hiscores tag at the front of the response
         //platform.runlater so no weirdness with threads
-        Platform.runLater(() ->{
+        Platform.runLater(() -> {
             logger.info("Recieved communiication");
             addOnlineScoreToDisplay(response);
 
@@ -214,10 +217,11 @@ public class ScoreScene extends BaseScene{
 
     /**
      * add the online scores to the display
+     *
      * @param message the online scores
      */
 
-    private void addOnlineScoreToDisplay(String message){
+    private void addOnlineScoreToDisplay(String message) {
         logger.info("Handling communication");
         //format the message
         message = message.replace("HISCORES ", "");
@@ -245,28 +249,28 @@ public class ScoreScene extends BaseScene{
     /**
      * write the specified score to the server if its large enough
      */
-    private void writeOnlineScore(int score, String name){
-        if(game.getScore().get() > score){
+    private void writeOnlineScore(int score, String name) {
+        if (game.getScore().get() > score) {
             com.send("HISCORE " + name + ":" + score);
             com.send("HISCORES");
         }
     }
 
 
-
-    private TextField createTextField(){
+    private TextField createTextField() {
         TextField textField = new TextField();
         textField.setText("Enter Your Name");
         textField.setFont(new Font("Impact", 20));
         textField.setPrefWidth(300);
-        return  textField;
+        return textField;
     }
 
     /**
      * sets up a button which submits whats in the text field
+     *
      * @return the button
      */
-    private Button setUpGetNameButton(){
+    private Button setUpGetNameButton() {
         Button button = new Button("SUBMIT");
         button.setFont(new Font("Impact", 20));
         button.setPrefWidth(100);
@@ -276,7 +280,6 @@ public class ScoreScene extends BaseScene{
         button.setOnMouseExited(mouseEvent -> button.setTextFill(Color.GREEN));
         return button;
     }
-
 
 
 }

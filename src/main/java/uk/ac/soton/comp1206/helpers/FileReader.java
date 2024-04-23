@@ -15,16 +15,16 @@ public class FileReader {
     private static final Logger logger = LogManager.getLogger(FileReader.class);
 
     //the filepath of scores
-    final static String scoreFilePath = "src" + File.separator + "main" +  File.separator + "resources" +  File.separator + "scores" + File.separator + "scores.txt";
+    final static String scoreFilePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "scores" + File.separator + "scores.txt";
 
 
-    public static String[] readScoresAndNamesAsString(){
+    public static String[] readScoresAndNamesAsString() {
         logger.info("Reading from file: " + scoreFilePath);
 
         List<String> allLines;
         //read all lines in file
-        try{
-           allLines = Files.readAllLines(Paths.get(scoreFilePath));
+        try {
+            allLines = Files.readAllLines(Paths.get(scoreFilePath));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,10 +36,11 @@ public class FileReader {
 
     /**
      * Appends a string to scores.txt.
+     *
      * @param toWrite the string to write to scores.txt
      */
-    public static void writeToScoresFile(String toWrite){
-        try{
+    public static void writeToScoresFile(String toWrite) {
+        try {
             //write to the file + close the file
             FileWriter writer = new FileWriter(scoreFilePath, true);
             writer.write("\n" + toWrite);

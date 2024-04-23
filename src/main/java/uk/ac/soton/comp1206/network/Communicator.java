@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Uses web sockets to talk to a web socket server and relays communication to attached listeners
- *
+ * <p>
  * YOU DO NOT NEED TO WORRY ABOUT THIS CLASS! Leave it be :-)
  */
 public class Communicator {
@@ -46,6 +46,7 @@ public class Communicator {
                 public void onTextMessage(WebSocket websocket, String message) throws Exception {
                     Communicator.this.receive(websocket, message);
                 }
+
                 @Override
                 public void onPingFrame(WebSocket webSocket, WebSocketFrame webSocketFrame) throws Exception {
                     logger.info("Ping? Pong!");
@@ -56,15 +57,17 @@ public class Communicator {
             ws.addListener(new WebSocketAdapter() {
                 @Override
                 public void onTextMessage(WebSocket websocket, String message) throws Exception {
-                    if(message.startsWith("ERROR")) {
+                    if (message.startsWith("ERROR")) {
                         logger.error(message);
                     }
                 }
+
                 @Override
                 public void handleCallbackError(WebSocket webSocket, Throwable throwable) throws Exception {
                     logger.error("Callback Error:" + throwable.getMessage());
                     throwable.printStackTrace();
                 }
+
                 @Override
                 public void onError(WebSocket webSocket, WebSocketException e) throws Exception {
                     logger.error("Error:" + e.getMessage());
@@ -72,17 +75,18 @@ public class Communicator {
                 }
             });
 
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Socket error: " + e.getMessage());
             e.printStackTrace();
 
-            Alert error = new Alert(Alert.AlertType.ERROR,"Unable to communicate with the TetrECS server\n\n" + e.getMessage() + "\n\nPlease ensure you are connected to the VPN");
+            Alert error = new Alert(Alert.AlertType.ERROR, "Unable to communicate with the TetrECS server\n\n" + e.getMessage() + "\n\nPlease ensure you are connected to the VPN");
             error.showAndWait();
             System.exit(1);
         }
     }
 
-    /** Send a message to the server
+    /**
+     * Send a message to the server
      *
      * @param message Message to send
      */
@@ -94,6 +98,7 @@ public class Communicator {
 
     /**
      * Add a new listener to receive messages from the server
+     *
      * @param listener the listener to add
      */
     public void addListener(CommunicationsListener listener) {
@@ -107,15 +112,16 @@ public class Communicator {
         this.handlers.clear();
     }
 
-    /** Receive a message from the server. Relay to any attached listeners
+    /**
+     * Receive a message from the server. Relay to any attached listeners
      *
      * @param websocket the socket
-     * @param message the message that was received
+     * @param message   the message that was received
      */
     private void receive(WebSocket websocket, String message) {
         logger.info("Received: " + message);
 
-        for(CommunicationsListener handler : handlers) {
+        for (CommunicationsListener handler : handlers) {
             handler.receiveCommunication(message);
         }
     }

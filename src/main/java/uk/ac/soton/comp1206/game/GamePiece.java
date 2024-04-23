@@ -2,7 +2,7 @@ package uk.ac.soton.comp1206.game;
 
 /**
  * Instances of GamePiece Represents the model of a specific Game Piece with it's block makeup.
- *
+ * <p>
  * The GamePiece class also contains a factory for producing a GamePiece of a particular shape, as specified by it's
  * number.
  */
@@ -30,6 +30,7 @@ public class GamePiece {
 
     /**
      * Create a new GamePiece of the specified piece number
+     *
      * @param piece piece number
      * @return the created GamePiece
      */
@@ -134,7 +135,8 @@ public class GamePiece {
 
     /**
      * Create a new GamePiece of the specified piece number and rotation
-     * @param piece piece number
+     *
+     * @param piece    piece number
      * @param rotation number of times to rotate
      * @return the created GamePiece
      */
@@ -148,9 +150,10 @@ public class GamePiece {
     /**
      * Create a new GamePiece with the given name, block makeup and value. Should not be called directly, only via the
      * factory.
-     * @param name name of the piece
+     *
+     * @param name   name of the piece
      * @param blocks block makeup of the piece
-     * @param value the value of this piece
+     * @param value  the value of this piece
      */
     private GamePiece(String name, int[][] blocks, int value) {
         this.name = name;
@@ -158,9 +161,9 @@ public class GamePiece {
         this.value = value;
 
         //Use the shape of the block to create a grid with either 0 (empty) or the value of this shape for each block.
-        for(int x = 0; x < blocks.length; x++) {
+        for (int x = 0; x < blocks.length; x++) {
             for (int y = 0; y < blocks[x].length; y++) {
-                if(blocks[x][y] == 0) continue;
+                if (blocks[x][y] == 0) continue;
                 blocks[x][y] = value;
             }
         }
@@ -168,6 +171,7 @@ public class GamePiece {
 
     /**
      * Get the value of this piece
+     *
      * @return piece value
      */
     public int getValue() {
@@ -176,6 +180,7 @@ public class GamePiece {
 
     /**
      * Get the block makeup of this piece
+     *
      * @return 2D grid of the blocks representing the piece shape
      */
     public int[][] getBlocks() {
@@ -184,10 +189,11 @@ public class GamePiece {
 
     /**
      * Rotate this piece the given number of rotations
+     *
      * @param rotations number of rotations
      */
     public void rotate(int rotations) {
-        for(int rotated = 0; rotated < rotations; rotated ++) {
+        for (int rotated = 0; rotated < rotations; rotated++) {
             rotate();
         }
     }
@@ -215,12 +221,12 @@ public class GamePiece {
 
     /**
      * Return the string representation of this piece
+     *
      * @return the name of this piece
      */
     public String toString() {
         return this.name;
     }
-
 
 
 }
