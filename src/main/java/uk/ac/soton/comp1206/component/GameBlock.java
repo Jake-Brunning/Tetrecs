@@ -1,18 +1,25 @@
 package uk.ac.soton.comp1206.component;
 
+import javafx.animation.FadeTransition;
 import javafx.animation.FillTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.DirectionalLight;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.effect.*;
 import javafx.scene.paint.*;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.DirectoryNotEmptyException;
+import java.security.Key;
 
 /**
  * The Visual User Interface component representing a single block in the grid.
@@ -26,6 +33,8 @@ import java.nio.file.DirectoryNotEmptyException;
 public class GameBlock extends Canvas {
 
     private static final Logger logger = LogManager.getLogger(GameBlock.class);
+
+    private final double transparency = 0.15;
 
     /**
      * The set of colours for different pieces
@@ -131,10 +140,14 @@ public class GameBlock extends Canvas {
         //If the block is empty, paint as empty
         if (value.get() == 0) {
             paintEmpty();
-        } else {
+        } else if(value.get() == -1){ //if block is being cleared in a line
+            paintEmpty();
+            //fadeBlockOut();
+        }  else {
             //If the block is not empty, paint with the colour represented by the value
             paintColor(COLOURS[value.get()]);
         }
+
     }
 
     /**
@@ -150,11 +163,10 @@ public class GameBlock extends Canvas {
         gc.setFill(new Color(0.6, 0.6, 0.6, 0.15));
         gc.fillRect(0, 0, width, height);
 
-
         //glow effect on the rects makes the pieces look shiny
         Glow glow = new Glow();
         glow.setLevel(0.6);
-        //gc.setEffect(glow);
+        gc.applyEffect(glow);
 
         //Border
         gc.setStroke(Color.BLACK);
@@ -175,6 +187,25 @@ public class GameBlock extends Canvas {
         gc.fillOval(0, 0, width , height);
     }
 
+    //tell the block to fade out after being cleared
+    public void fadeBlockOut(){
+        var gc = getGraphicsContext2D();
+
+        //ok the goal here is to change the block colour from green to transparent
+        //the fade transition cant really be used due to if affecting everything. Effects on the blocks etc.
+
+        //create timeline to handle the colour changing
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+            }
+        }));
+
+        timeline.playFromStart();
+
+    }
+
     /**
      * Paint this canvas with the given colour
      * @param colour the colour to paint
@@ -187,7 +218,7 @@ public class GameBlock extends Canvas {
 
         //create glow on the block
         Glow glow = new Glow();
-        glow.setLevel(0.7);
+        glow.setLevel(0.6);
 
         //some lighting stuff. the lighting and glow gives a cartoony effect on the blocks
         DirectionalLight light = new DirectionalLight();

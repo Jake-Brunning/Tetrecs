@@ -4,6 +4,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -68,7 +69,7 @@ public class MenuScene extends BaseScene {
 
         //display title image
         ImageView tetrecsTitle = new ImageView(getImage.getImage(getImage.IMAGE.TETRECS));
-        mainPane.setTop(tetrecsTitle);
+        mainPane.setCenter(tetrecsTitle);
 
         //for some reason, the title image is default 4000 pixels wide, so has to be scaled down
         tetrecsTitle.setFitHeight(450);
@@ -115,14 +116,34 @@ public class MenuScene extends BaseScene {
         ecsGames.setFitHeight(150);
         ecsGames.setPreserveRatio(true);
 
-        //add it to the bottom right
-        mainPane.setBottom(ecsGames);
-        BorderPane.setAlignment(ecsGames, Pos.BOTTOM_RIGHT);
 
-        //add buttons to screen
+        //add buttons to vbox
         vbox.getChildren().addAll(playButton, instrButton, multButton, exitButton);
         vbox.setAlignment(Pos.CENTER);
-        mainPane.setCenter(vbox);
+
+        //want dev logo on the bottom right of the screen. So it needs to be added to the bottom of the border pane
+        //with all the buttons. To achieve this we can add the button nodes vbox into a hbox.
+        HBox devLogoAndButtons = new HBox();
+        devLogoAndButtons.getChildren().addAll(ecsGames, vbox);
+        devLogoAndButtons.setAlignment(Pos.BOTTOM_LEFT);
+
+
+        //calculation to display the vbox (the buttons in the menu screen) perfectly in the center.
+        //in order to do this we need the vbox width. This is calculated asynchrounsly, so need to use platform.runlater
+        //to wait until the vbox width is actually calculated.
+        Platform.runLater(() ->{
+            //(menu screen width) - (logo width) - (vbox width / 2) = space needed to align buttons in the center
+            //vbox width is divided by 2 as half of the vbox is on the 'left' on the screen and other half on the right
+            //if it wasnt divided by 2 then the buttons would start on the exact centre, being displayed on the right.
+            devLogoAndButtons.setSpacing(((double) gameWindow.getWidth() / 2) - ecsGames.getFitWidth() - vbox.prefWidth(-1) / 2);
+        });
+
+
+
+        mainPane.setBottom(devLogoAndButtons);
+
+        //start animations
+        applyRotateTransition(tetrecsTitle); //start rotating the title button
 
         Multimedia.playBackgroundMusic(Multimedia.MUSIC.MENU);
 
@@ -133,7 +154,7 @@ public class MenuScene extends BaseScene {
     private Button constructMenuButtons(String s){ //returns a button which can then have an event listener added to it
         Button button = new Button();
         button.setBackground(null); //make the background transparent
-        button.setFont(new Font("Orbitron", 40)); //set font
+        button.setFont(new Font("Orbitron", 30)); //set font
         button.setText(s);
         button.setTextFill(Color.WHITESMOKE); //set colour
 
@@ -155,6 +176,21 @@ public class MenuScene extends BaseScene {
     }
 
     /**
+     * gives a node a rotate transition effect, so it appears to swing left and right
+     * @param node the node to apply the transition to
+     */
+
+    private void applyRotateTransition(Node node){
+        RotateTransition rotateTransition = new RotateTransition(Duration.millis(3000), node);
+        rotateTransition.setByAngle(50); //rotate to this angle
+        rotateTransition.setFromAngle(-25); //rotate from this angle
+        rotateTransition.setCycleCount(Animation.INDEFINITE); //have the animation infinitly cycle
+        rotateTransition.setAutoReverse(true); //reverse animation when it hits angle
+
+        rotateTransition.play(); //start rotation
+    }
+
+    /**
      * Initialise the menu
      */
     @Override
@@ -170,34 +206,5 @@ public class MenuScene extends BaseScene {
         gameWindow.startChallenge();
     }
 
-
-    /**
-     * creates a timeline which handles the animation of the pieces falling down the scree
-     * @return a timer which handles this
-     */
-    private Timeline setUpTimer(){
-        final int delayBetweenFrames = 500; //duration between frames in milliseconds
-
-        //the list of pieces falling down the screen
-        ArrayList<PieceBoard> pieceBoards = new ArrayList<>();
-        Random rng = new Random();
-
-        return new Timeline(new KeyFrame(Duration.millis(delayBetweenFrames), new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent actionEvent) {
-
-                for(PieceBoard x : pieceBoards){
-                    //move the pieceboard down the screen
-                    x.layoutXProperty().set(x.layoutXProperty().get() + 10);
-                    //1/4 chance to rotate a piece
-                    if(rng.nextInt(4) == 1){
-
-                    }
-                }
-            }
-
-        }));
-    }
 
 }

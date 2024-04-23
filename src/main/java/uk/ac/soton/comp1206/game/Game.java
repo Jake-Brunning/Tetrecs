@@ -231,6 +231,7 @@ public class Game {
         //clear horizontals
         for (Integer row : horizontalsToClear) {
             for(int i = 0 ; i < grid.getCols(); i++){ //i goes right
+                grid.set(i, row, -1);
                 grid.set(i, row, 0);
             }
         }
@@ -238,6 +239,7 @@ public class Game {
         //clear verticals
         for(Integer col : verticalsToClear){
             for(int j = 0; j < grid.getRows(); j++){ //j goes downwards
+                grid.set(col, j, -1);
                 grid.set(col, j, 0);
             }
         }
