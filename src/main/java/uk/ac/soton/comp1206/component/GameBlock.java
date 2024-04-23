@@ -231,8 +231,16 @@ public class GameBlock extends Canvas {
         gc.applyEffect(glow);
         gc.applyEffect(light.getEffect());
 
-        //Colour fill
-        gc.setFill(colour);
+        // Define the colours to make up the block
+        Color colourAsObject = (Color) colour; //expression cast is fine as this function only ever takes a colour object
+        Color colourStart = (Color) colour;
+        Color colourEnd = colourAsObject.desaturate().desaturate().darker().desaturate(); //just played around to get this value
+
+
+        //fill with a gradient, so block is not one colour throughout.
+        gc.setFill(new javafx.scene.paint.LinearGradient(0, 0, 1, 0, true, javafx.scene.paint.CycleMethod.NO_CYCLE,
+                new javafx.scene.paint.Stop(0, colourStart), new javafx.scene.paint.Stop(1, colourEnd)));
+
         gc.fillRect(0,0, width, height);
 
         //Border

@@ -16,7 +16,7 @@ public class Launcher {
 
 
     //List of stuff to do:
-    //TODO: Menus screen animations + visual effectS
+    //TODO: Menus screen animations + visual effectS    MENU SCREEN ANIMATION DONE, CHECK VIS EFFECTS
     //TODO: BLock updated graphics (make them look cooler)  UH MAYBE??? NEEDS MORE WORK
     //TODO: Hover effect on blocks(?)                       DONE
     //TODO: Fade out effect when clearing blocks            FAILED
