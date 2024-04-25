@@ -34,16 +34,40 @@ public class Game {
      */
     protected final Grid grid;
 
+    /**
+     * the current piece the player can directly play
+     */
     private GamePiece currentPiece;
+    /**
+     * the next piece the player can swap with and play.
+     */
     private GamePiece followingPiece;
 
+    /**
+     * the game score. Simple integer property so it can be displayed on the screen
+     */
     private SimpleIntegerProperty score = new SimpleIntegerProperty(0);
+    /**
+     * the game level. Simple integer property so it can be displayed on the screen
+     */
     private SimpleIntegerProperty level = new SimpleIntegerProperty(0);
+    /**
+     * the amount of lives left. Simple integer property so it can be displayed on the screen
+     */
     private SimpleIntegerProperty lives = new SimpleIntegerProperty(3);
+    /**
+     * the game multiplier. Simple integer property so it can be displayed on the screen
+     */
     private SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
 
+    /**
+     * the listener which is called when the next piece needs to be swapped with the following piece.
+     */
     private NextPieceListener nextPieceListener;
 
+    /**
+     * The listener which is called when a piece is successfully placed=
+     */
     private PiecePlacedListener piecePlacedListener;
 
 
@@ -132,6 +156,11 @@ public class Game {
         return rows;
     }
 
+    /**
+     * Creates a new piece for the game to use
+     *
+     * @return the piece spawned in
+     */
     private GamePiece spawnPiece() {
         Random rng = new Random();
         GamePiece newPiece = GamePiece.createPiece(rng.nextInt(0, GamePiece.PIECES));
@@ -139,12 +168,16 @@ public class Game {
         return newPiece;
     }
 
+    /**
+     * Puts following piece in current piece and creates a new piece to replace following piece.
+     * -> (Used when a piece is successfully played so a new piece needs to be put in followingPiece)
+     */
     private void nextPiece() {
         logger.info("Switching to next piece");
         currentPiece = followingPiece;
         followingPiece = spawnPiece();
 
-        //trigger listener
+        //trigger listener, as challenge scene needs to different pieces.
         callPieceUpdatedListener();
     }
 
@@ -156,13 +189,16 @@ public class Game {
         callPieceUpdatedListener();
     }
 
+    /**
+     * swaps the 2 pieces the player can use.
+     */
     public void swapPieces() {
         logger.info("Switching pieces");
         GamePiece temp = currentPiece;
         currentPiece = followingPiece;
         followingPiece = temp;
 
-        //trigger listener
+        //trigger listener, as challenge scene needs to display different pieces
         callPieceUpdatedListener();
     }
 
@@ -181,10 +217,11 @@ public class Game {
     }
 
 
-    private void afterPiece() {//check if any horizontal / vertical lines have been cleared
-
-        //(this function can be improved in terms of time but its more readable this way)
-
+    /**
+     * checks if any horizontal or vertical lines are full and need to be cleared
+     * Clears said lines if that is the case.
+     */
+    private void afterPiece() {
 
         Boolean isHorizontalFull = true; //true if a whole horizontal is full
         Boolean isVerticalFull = true; //true if a whole vertical is full
@@ -235,21 +272,26 @@ public class Game {
         //clear horizontals
         for (Integer row : horizontalsToClear) {
             for (int i = 0; i < grid.getCols(); i++) { //i goes right
-                grid.set(i, row, -1);
                 grid.set(i, row, 0);
+
             }
         }
 
         //clear verticals
         for (Integer col : verticalsToClear) {
             for (int j = 0; j < grid.getRows(); j++) { //j goes downwards
-                grid.set(col, j, -1);
                 grid.set(col, j, 0);
             }
         }
     }
 
-    private void calculateAndUpdateScore(int noLines, int noBlocks) { //calculates the new score and sets it to score
+    /**
+     * calculates and updates the current : level, score, multiplier; called when after a piece is successfully played
+     *
+     * @param noLines  The number of lines cleared by the play
+     * @param noBlocks The number of blocks cleared by the play
+     */
+    private void calculateAndUpdateScore(int noLines, int noBlocks) {
         //formula:
         //score = score + (numberOfLinesCleared * numberOfBlocksCleared * 10 * currentMultiplier)
         score.set(score.get() + (noLines * noBlocks * 10 * multiplier.get()));
@@ -269,33 +311,68 @@ public class Game {
         }
     }
 
+    /**
+     * set the next piece listener.
+     *
+     * @param nextPieceListener the function to set.
+     */
     public void setNextPieceListener(NextPieceListener nextPieceListener) {
         this.nextPieceListener = nextPieceListener;
     }
 
+    /**
+     * set the piece placed listener
+     *
+     * @param piecePlacedListener the function to set
+     */
     public void setPiecePlacedListener(PiecePlacedListener piecePlacedListener) {
         this.piecePlacedListener = piecePlacedListener;
     }
 
+
+    /**
+     * rotates the current piece.
+     *
+     * @param noRotations the amount of clockwise 90 degree rotations to perform
+     */
     public void rotateCurrentPiece(int noRotations) {
         currentPiece.rotate(noRotations);
         callPieceUpdatedListener();
         Multimedia.playAudioFile(Multimedia.SOUND.ROTATE);
     }
 
-    //gets for score, lives, level and multiplier
+    /**
+     * gets score
+     *
+     * @return this.score
+     */
     public SimpleIntegerProperty getScore() {
         return score;
     }
 
+    /**
+     * gets lives
+     *
+     * @return this.lives
+     */
     public SimpleIntegerProperty getLives() {
         return lives;
     }
 
+    /**
+     * gets levvel
+     *
+     * @return this.level
+     */
     public SimpleIntegerProperty getLevel() {
         return level;
     }
 
+    /**
+     * gets multiplier
+     *
+     * @return this.multiplier
+     */
     public SimpleIntegerProperty getMultiplier() {
         return multiplier;
     }

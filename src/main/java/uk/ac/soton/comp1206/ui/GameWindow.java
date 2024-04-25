@@ -96,6 +96,9 @@ public class GameWindow {
         loadScene(new InstructionsScene(this));
     }
 
+    /**
+     * display the lobby scene
+     */
     public void startLobbyScene() {
         loadScene(new LobbyScene(this));
     }

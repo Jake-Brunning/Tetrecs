@@ -8,10 +8,16 @@ import java.io.File;
  * Contains static functions for returning images from image file.
  */
 public class getImage {
+    /**
+     * name of the different images to grab.
+     */
     public static enum IMAGE {ECSGAMES, INSTRUCTIONS, TETRECS, BACKGROUND1}
 
-    ;
-
+    /**
+     * returns an image from the project resources folder.
+     * @param image the image name
+     * @return the image.
+     */
     public static Image getImage(IMAGE image) {
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "images" + File.separator;
 

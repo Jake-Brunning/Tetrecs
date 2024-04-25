@@ -11,13 +11,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * used to read from scores.txt
+ */
 public class FileReader {
     private static final Logger logger = LogManager.getLogger(FileReader.class);
 
-    //the filepath of scores
+    /**
+     * the project filepath of the scores file.
+     */
     final static String scoreFilePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "scores" + File.separator + "scores.txt";
 
 
+    /**
+     * gets scores and names from the score text file
+     * @return The scores and names in an arrary. Each element of the array is a line of the text file. Each line is
+     * formatted: <name>:<score>
+     */
     public static String[] readScoresAndNamesAsString() {
         logger.info("Reading from file: " + scoreFilePath);
 
@@ -35,7 +45,7 @@ public class FileReader {
     }
 
     /**
-     * Appends a string to scores.txt.
+     * Appends a string to scores.txt. Used to write new scores.
      *
      * @param toWrite the string to write to scores.txt
      */

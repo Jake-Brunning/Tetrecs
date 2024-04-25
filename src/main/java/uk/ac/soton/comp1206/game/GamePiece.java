@@ -34,8 +34,6 @@ public class GamePiece {
      * @param piece piece number
      * @return the created GamePiece
      */
-
-    //value is / should be colour
     public static GamePiece createPiece(int piece) {
         switch (piece) {
             //Line

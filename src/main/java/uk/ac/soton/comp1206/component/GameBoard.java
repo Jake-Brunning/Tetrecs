@@ -57,6 +57,10 @@ public class GameBoard extends GridPane {
      * The listener to call when a specific block is clicked
      */
     protected BlockClickedListener blockClickedListener;
+
+    /**
+     * The listener to call when a piece is rotated
+     */
     protected RotateListener rotateListener;
 
 

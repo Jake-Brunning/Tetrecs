@@ -13,17 +13,30 @@ import java.io.File;
  */
 
 public class Multimedia {
+    /**
+     * the background music player
+     */
     private static MediaPlayer backgroundMusicPlayer;
+    /**
+     * the sound effect music player
+     */
     private static MediaPlayer audioPlayer;
     private static final Logger logger = LogManager.getLogger(Multimedia.class);
 
-    //enums help with magic boxing this class (making it so no other class needs to know how it works)
+    /**
+     * the names of the different sound effect to play
+     */
     public static enum SOUND {CLEAR, EXPLODE, FAIL, INTRO, LEVEL, LIFEGAIN, LIFELOSE, PLACE, PLING, ROTATE, TRANSITION}
 
+    /**
+     * the name of the different background music to play
+     */
     public static enum MUSIC {END, GAME, GAME_START, MENU}
 
 
     /**
+     * plays a audiofile specified by the filepath.
+     *
      * @param filePath : the filepath of the sound to play
      */
     private static void playAudioFile(String filePath) { //plays a specified audio file once
@@ -36,7 +49,7 @@ public class Multimedia {
     }
 
     /**
-     * @param sound : the sound to play as an enum. It's converted to a filepath of that sound
+     * @param sound the name of the sound to play. Used to get the filepath of the actual sound
      */
     public static void playAudioFile(SOUND sound) {
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "sounds" + File.separator;
@@ -60,6 +73,8 @@ public class Multimedia {
     }
 
     /**
+     * Play background music from the filepath specified
+     *
      * @param filePath the filepath of the music to play
      */
     private static void playBackgroundMusic(String filePath) { //loop a specified audiofile
@@ -75,7 +90,9 @@ public class Multimedia {
     }
 
     /**
-     * @param music the music to play on loop as an enum. its converted to a filepath.
+     * Play the background music.
+     *
+     * @param music the music to play on loop as an enum. it's converted to a filepath.
      */
     public static void playBackgroundMusic(MUSIC music) {//loop a specifed audioFile based on enum
         String relativePath = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "music" + File.separator;

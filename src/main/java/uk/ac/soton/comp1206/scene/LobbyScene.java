@@ -205,6 +205,11 @@ public class LobbyScene extends BaseScene {
         }
     }
 
+    /**
+     * handles the list of incoming users
+     *
+     * @param response the string response from the server of the list of users
+     */
     private void handleIncomingUsers(String response) {
         response = response.replace("USERS ", "");
 
@@ -232,23 +237,43 @@ public class LobbyScene extends BaseScene {
         myTextFlow.getChildren().add(text);
     }
 
+    /**
+     * handles changing the users nickname
+     *
+     * @param response the response from the server (the name)
+     */
     private void handleNick(String response) {
         name = response.replace("NICK ", "");
         this.name = name;
     }
 
+    /**
+     * handles joining a new channel
+     *
+     * @param response the response from the server (the channel name)
+     */
     private void handleJoiningAChannel(String response) {
         response = response.replace("JOIN ", "");
         currentChannel = response;
 
     }
 
+    /**
+     * handles and displays the list of channels
+     *
+     * @param response the list of channels from the server
+     */
     private void handleChannelResponse(String response) {
         response = response.replace("CHANNELS ", "");
         String[] channels = response.split("\n");
         addChanelsToScreen(channels);
     }
 
+    /**
+     * Adds the channels to the screen as buttons. when clicking said button it joins the channel
+     *
+     * @param channelNames the channel names to add
+     */
     private void addChanelsToScreen(String[] channelNames) {
         ArrayList<Button> channelButtons = new ArrayList<>();
 
@@ -261,6 +286,13 @@ public class LobbyScene extends BaseScene {
         channelDisplay.getChildren().clear();
         channelDisplay.getChildren().addAll(channelButtons);
     }
+
+    /**
+     * makes a button which when clicked joins that channel.
+     *
+     * @param channelName The name of the channel
+     * @return The button.
+     */
 
     private Button makeChannelButton(String channelName) {
         //set up button ui
@@ -281,6 +313,11 @@ public class LobbyScene extends BaseScene {
         return button;
     }
 
+    /**
+     * makes the title on the top of the scene saying below it is the list of channels
+     *
+     * @return The label with the channel title.
+     */
     private Label makeChannelTitle() {
         Label label = new Label("CHANNELS");
         label.setFont(new Font("Impact", 40));
@@ -298,6 +335,11 @@ public class LobbyScene extends BaseScene {
         return label;
     }
 
+    /**
+     * makes a label to display the name of a user in the channel
+     *
+     * @param name the name of the user
+     */
     private void makeNameText(String name) {
         Label text = new Label();
         text.setText(name);
@@ -307,6 +349,12 @@ public class LobbyScene extends BaseScene {
         namesDisplay.getChildren().addAll(text);
     }
 
+    /**
+     * Creates a hbox containg a textField and a button. The textfield specifies the name of the channel to create
+     * the button specifies when to create the channel itself.
+     *
+     * @return the HBox containing the textfield and button combo
+     */
     private HBox setUpCreateChannel() {
         HBox hbox = new HBox();
 
@@ -328,11 +376,17 @@ public class LobbyScene extends BaseScene {
             com.send("CREATE " + textField.getText());
         });
 
+        //add to hbox and return
         hbox.getChildren().addAll(textField, button);
         hbox.setAlignment(Pos.BOTTOM_LEFT);
         return hbox;
     }
 
+    /**
+     * sets up a textfield and button for sending messages to the chatbox
+     *
+     * @return the hbox containg the button and textfield for sending messages
+     */
     private HBox setUpSendMessage() {
         HBox hbox = new HBox();
 

@@ -37,6 +37,9 @@ public class InstructionsScene extends BaseScene {
         intiliseKeyboardInputs();
     }
 
+    /**
+     * Creates and handles the possible key inputs for this scene
+     */
     private void intiliseKeyboardInputs() {//intilise the events for the keyboard inputs
         //here so you can get back to the menu
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
@@ -128,6 +131,11 @@ public class InstructionsScene extends BaseScene {
 
     }
 
+    /**
+     * creates and formats a vbox containing pieceboards to display
+     *
+     * @return The vbox
+     */
     private VBox createPieceBoardVbox() {
         VBox vBox = new VBox();
         vBox.setSpacing(20);

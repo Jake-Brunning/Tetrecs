@@ -34,8 +34,6 @@ public class GameBlock extends Canvas {
 
     private static final Logger logger = LogManager.getLogger(GameBlock.class);
 
-    private final double transparency = 0.15;
-
     /**
      * The set of colours for different pieces
      */
@@ -142,9 +140,6 @@ public class GameBlock extends Canvas {
         //If the block is empty, paint as empty
         if (value.get() == 0) {
             paintEmpty();
-        } else if (value.get() == -1) { //if block is being cleared in a line
-            paintEmpty();
-            //fadeBlockOut();
         } else {
             //If the block is not empty, paint with the colour represented by the value
             paintColor(COLOURS[value.get()]);
@@ -152,8 +147,9 @@ public class GameBlock extends Canvas {
 
     }
 
+
     /**
-     * Paint this canvas empty
+     * Paint this canvas empty (the blocks)
      */
     private void paintEmpty() {
         var gc = getGraphicsContext2D();
@@ -175,6 +171,7 @@ public class GameBlock extends Canvas {
         gc.strokeRect(0, 0, width, height);
     }
 
+
     /**
      * draw a circle on this gameblock
      */
@@ -189,24 +186,6 @@ public class GameBlock extends Canvas {
         gc.fillOval(0, 0, width, height);
     }
 
-    //tell the block to fade out after being cleared
-    public void fadeBlockOut() {
-        var gc = getGraphicsContext2D();
-
-        //ok the goal here is to change the block colour from green to transparent
-        //the fade transition cant really be used due to if affecting everything. Effects on the blocks etc.
-
-        //create timeline to handle the colour changing
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-
-            }
-        }));
-
-        timeline.playFromStart();
-
-    }
 
     /**
      * Paint this canvas with the given colour

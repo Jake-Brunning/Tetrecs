@@ -151,6 +151,11 @@ public class MenuScene extends BaseScene {
 
     }
 
+    /**
+     * Creates a button to be displayed on the menuscreen
+     * @param s the name on the button
+     * @return the button
+     */
     private Button constructMenuButtons(String s) { //returns a button which can then have an event listener added to it
         Button button = new Button();
         button.setBackground(null); //make the background transparent

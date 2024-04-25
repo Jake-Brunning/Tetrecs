@@ -35,7 +35,10 @@ public class ScoreScene extends BaseScene {
     private static final Logger logger = LogManager.getLogger(ScoreScene.class);
     private Game game; //the final gamestate
 
+    //the vbox which displays the online scores
     private VBox onlineScoresVbox;
+
+    //the communicator to interact with the server
     private Communicator com;
 
     public ScoreScene(GameWindow gameWindow, Game game) {
@@ -181,6 +184,9 @@ public class ScoreScene extends BaseScene {
         return toReturn;
     }
 
+    /**
+     * create and handle the keyboard inputs in this scene
+     */
     private void intiliseKeyboardInputs() {//intilise the events for the keyboard inputs
         //here, so you can get back to the menu
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
@@ -256,7 +262,11 @@ public class ScoreScene extends BaseScene {
         }
     }
 
-
+    /**
+     * create the textfield where the user can enter their name
+     *
+     * @return the textfield
+     */
     private TextField createTextField() {
         TextField textField = new TextField();
         textField.setText("Enter Your Name");

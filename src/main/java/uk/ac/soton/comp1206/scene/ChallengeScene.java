@@ -34,15 +34,38 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 public class ChallengeScene extends BaseScene {
 
     private static final Logger logger = LogManager.getLogger(MenuScene.class);
+
+    /**
+     * the game itself
+     */
     protected Game game;
+    /**
+     * the number of frames elapsed in this cycle.
+     */
     private int noOfFrames = 0; //the number of frames elapsed to play the current piece
-    private int noOfFramesUntilDeath = 1150; //the number of frames until death
+    /**
+     * the number of frames the player has until a life is lost.
+     * Starting value is calculated based on the spec.
+     */
+    private int noOfFramesUntilDeath = 1150;
 
-    private Rectangle deathBar; //the bar which displays the time until death
+    /**
+     * The visual bar which shows the player how much time they have left to play the current piece.
+     */
+    private Rectangle deathBar;
 
-    private int x = 0; //the current x position of the keyboard
-    private int y = 0; //the current y position of the keyboard
+    /**
+     * the current x position of the keyboard
+     */
+    private int x = 0;
+    /**
+     * the current Y position of the keyboard
+     */
+    private int y = 0;
 
+    /**
+     * the board itself
+     */
     private GameBoard board;
 
     /**
@@ -166,6 +189,11 @@ public class ChallengeScene extends BaseScene {
 
     }
 
+    /**
+     * gets the local highest score and creates a container to display it
+     *
+     * @return a HBOX containing the highset score and a label saying thats the highest score
+     */
     private HBox makeHighestScoreInfo() {
         //get the highest score
 
@@ -203,6 +231,9 @@ public class ChallengeScene extends BaseScene {
         deathBar.setY(10);
     }
 
+    /**
+     * resets the death bar and the timer
+     */
     private void resetWindowAnimations() {
         resetTimer();
         resetDeathBar(noOfFramesUntilDeath);
@@ -210,7 +241,6 @@ public class ChallengeScene extends BaseScene {
 
     /**
      * sets up the timeline to use for the challenge scene. Cannot extend keyframe so needs to be defined here
-     * (A lot of the game logic to do with losing lives is in this function)
      *
      * @return returns the timeline.
      */
@@ -218,11 +248,10 @@ public class ChallengeScene extends BaseScene {
         final int delayBetweenFrames = 10;
 
         return new Timeline(new KeyFrame(Duration.millis(delayBetweenFrames), new EventHandler<ActionEvent>() {
-            private int totalFramesUntilDeath; //the total amount of frames until death occurs
 
             /**
              * this function is called every frame
-             * @param actionEvent
+             * @param actionEvent unused. Needs to be there due to override.
              */
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -278,23 +307,35 @@ public class ChallengeScene extends BaseScene {
         deathBar.setWidth(gameWindow.getWidth() - (howFar * (double) gameWindow.getWidth()));
     }
 
+    /**
+     * Resets the death bar VISUALLY ( so it makes it look full again )
+     *
+     * @param totalFrames the amount of frames the player has to play the piece
+     */
     private void resetDeathBar(int totalFrames) {
         //reset the width
         deathBar.setWidth(gameWindow.getWidth());
 
-        //reset the transition to red
+        //reset the transition to red. totalFrames * 10 as each frame is 10 ms long.
         FillTransition fillTransition = new FillTransition(new Duration(totalFrames * 10), deathBar, Color.GREEN, Color.RED);
         fillTransition.playFromStart();
     }
 
+    /**
+     * resets the timer backend. putting number of frames to 0 achieves the effect of reseting the timer.
+     */
     private void resetTimer() {
         noOfFrames = 0;
     }
 
-    private void intiliseKeyboardInputs() {//intilise the events for the keyboard inputs
+    /**
+     * Creates the detection of each key press and handles each key press
+     */
+    private void intiliseKeyboardInputs() {
         getScene().addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
             //long if statement on handling each key press
             if (key.getCode() == KeyCode.R || key.getCode() == KeyCode.SPACE) {
+                //swap piece
                 logger.info("R or space press detected");
                 game.swapPieces();
             } else if (key.getCode() == KeyCode.Q || key.getCode() == KeyCode.Z || key.getCode() == KeyCode.OPEN_BRACKET) {
@@ -306,38 +347,47 @@ public class ChallengeScene extends BaseScene {
                 logger.info("E or C or ] press detected");
                 game.rotateCurrentPiece(1);
             } else if (key.getCode() == KeyCode.ESCAPE) {
+                //go back to menu
                 logger.info("Escape key press detected");
                 gameWindow.cleanup();
-                //gameWindow.loadScene(new MenuScene(gameWindow));
                 gameWindow.startMenu();
             }
             //moving position on the grid
             else if (key.getCode() == KeyCode.W || key.getCode() == KeyCode.UP) {
+                //move up on the grid
                 logger.info("W | UP key press detected");
                 board.getBlock(x, y).paint();
                 y--;
                 keepXandYinGrid();
             } else if (key.getCode() == KeyCode.A || key.getCode() == KeyCode.LEFT) {
+                //move left on the grid
                 logger.info("A | LEFT key press detected");
                 board.getBlock(x, y).paint();
                 x--;
                 keepXandYinGrid();
             } else if (key.getCode() == KeyCode.S || key.getCode() == KeyCode.DOWN) {
+                //move down on the grid
                 logger.info("S | DOWN key press detected");
                 board.getBlock(x, y).paint();
                 y++;
                 keepXandYinGrid();
             } else if (key.getCode() == KeyCode.D || key.getCode() == KeyCode.RIGHT) {
+                //move right on the grid
                 logger.info("D | RIGHT key press detected");
                 board.getBlock(x, y).paint();
                 x++;
                 keepXandYinGrid();
             } else if (key.getCode() == KeyCode.ENTER || key.getCode() == KeyCode.X) {
+                //click the block currently selected by the keyboard.
                 blockClicked(board.getBlock(x, y));
             }
         });
     }
 
+    /**
+     * used when moving the place location using the keyboard
+     * makes sure that you cannot move the location of the grid.
+     */
     private void keepXandYinGrid() {
         if (x < 0) {
             x = 0;
@@ -357,7 +407,13 @@ public class ChallengeScene extends BaseScene {
         board.getBlock(x, y).drawCircle();
     }
 
-    private Label generateUIText(String s) { //returns a label with the specified string in a cool font
+    /**
+     * Creates a label for text to display on the screen
+     *
+     * @param s the string to display in the label
+     * @return the label itself.
+     */
+    private Label generateUIText(String s) {
         Label label = new Label(s);
         label.setTextFill(Color.YELLOW);
 
@@ -378,7 +434,13 @@ public class ChallengeScene extends BaseScene {
         return label;
     }
 
-    private Label generateUINumber(SimpleIntegerProperty toBind) { //returns a label which can be binded to a number to display it
+    /**
+     * Creates a label which is binded to the integer property specified
+     *
+     * @param toBind the simple integer property to bind the label to
+     * @return the label which is bineded to the simple integer property
+     */
+    private Label generateUINumber(SimpleIntegerProperty toBind) {
         Label label = generateUIText("");
         label.setTextFill(Color.WHITE); //set colour
         label.textProperty().bind(toBind.asString());
