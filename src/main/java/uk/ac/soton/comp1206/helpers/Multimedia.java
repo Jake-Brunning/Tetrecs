@@ -44,7 +44,7 @@ public class Multimedia {
         File file = new File(filePath);
         String uriString = file.toURI().toString();
         audioPlayer = new MediaPlayer(new Media(uriString));
-        audioPlayer.setVolume(0.1); //set audio volume
+        audioPlayer.setVolume(0.02); //set audio volume
         audioPlayer.play();
     }
 
@@ -85,7 +85,7 @@ public class Multimedia {
 
         backgroundMusicPlayer = new MediaPlayer(new Media(uriString));
         backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE); //make it so the music loops forever
-        backgroundMusicPlayer.setVolume(0.1); //set volume
+        backgroundMusicPlayer.setVolume(0.02); //set volume
         backgroundMusicPlayer.play();
     }
 

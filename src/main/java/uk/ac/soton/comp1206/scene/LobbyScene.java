@@ -121,6 +121,7 @@ public class LobbyScene extends BaseScene {
         borderPane.setCenter(namesDisplay);
 
         //add listener
+        com.clearListeners();
         com.addListener(this::handleResponse);
 
         //Do inital lobby check
@@ -426,7 +427,6 @@ public class LobbyScene extends BaseScene {
                 logger.info("Escape key press detected");
                 gameWindow.cleanup();
                 checkTimer.stop();
-                com.send("QUIT");
                 gameWindow.startMenu();
             }
         });

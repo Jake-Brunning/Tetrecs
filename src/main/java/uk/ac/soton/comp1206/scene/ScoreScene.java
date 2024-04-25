@@ -202,6 +202,7 @@ public class ScoreScene extends BaseScene {
      * request online scores
      */
     private void loadOnlineScores() {
+        com.clearListeners();
         com.addListener(this::recieveOnlineScores);
         com.send("HISCORES");
     }
