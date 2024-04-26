@@ -69,6 +69,11 @@ public class ChallengeScene extends BaseScene {
     private GameBoard board;
 
     /**
+     * the timer the game uses to keep track of lives
+     */
+    private Timeline timer;
+
+    /**
      * Create a new Single Player challenge scene
      *
      * @param gameWindow the Game Window
@@ -147,11 +152,13 @@ public class ChallengeScene extends BaseScene {
         Label scoreText = generateUIText("SCORE:");
         Label multiplierText = generateUIText("    MULTIPLIER:");
         Label livesText = generateUIText("     LIVES:");
+        Label levelText = generateUIText("     LEVEL:");
 
         //labels for the number of score, lives and multiplier
         Label scoreNum = generateUINumber(game.getScore());
         Label multiplierNum = generateUINumber(game.getMultiplier());
         Label livesNum = generateUINumber(game.getLives());
+        Label levelNum = generateUINumber(game.getLevel());
 
         //make vbox to put highest score and game info in
         VBox gameInfoAndHighestScore = new VBox();
@@ -159,14 +166,14 @@ public class ChallengeScene extends BaseScene {
 
         //set spacing and add to the top of the display
         hBox.setSpacing(5);
-        hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum, livesText, livesNum);
+        hBox.getChildren().addAll(scoreText, scoreNum, multiplierText, multiplierNum, livesText, livesNum, levelText, levelNum);
         gameInfoAndHighestScore.getChildren().addAll(hBox, makeHighestScoreInfo());
         mainPane.setTop(gameInfoAndHighestScore);
 
 
         //set up timer for animations and etc
         final int delayBetweenFrames = 10; //the delay between frames in ms
-        Timeline timer = setUpTimer();
+        timer = setUpTimer();
 
         //set up rectangle which shrinks to create death timer
         setUpDeathBar();
@@ -184,6 +191,7 @@ public class ChallengeScene extends BaseScene {
 
         //start timer
         timer.setCycleCount(Animation.INDEFINITE); //run the timer indefinetly
+
         timer.play();
 
 
@@ -350,6 +358,7 @@ public class ChallengeScene extends BaseScene {
                 //go back to menu
                 logger.info("Escape key press detected");
                 gameWindow.cleanup();
+                timer.stop();
                 gameWindow.startMenu();
             }
             //moving position on the grid
